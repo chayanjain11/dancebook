@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  CUSTOMER
+  ORGANIZER
+}
+
+enum BookingStatus {
+  CONFIRMED
+  CANCELLED
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  name         String
+  phone        String?
+  role         Role      @default(CUSTOMER)
+  city         String?
+  workshops    Workshop[]
+  bookings     Booking[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Workshop {
+  id          String    @id @default(cuid())
+  title       String
+  danceStyle  String
+  description String
+  artistName  String    @default("")
+  imageUrl    String?
+  dateTime    DateTime
+  city        String
+  venue       String
+  price       Int
+  maxSeats    Int
+  organizer   User      @relation(fields: [organizerId], references: [id], onDelete: Cascade)
+  organizerId String
+  bookings    Booking[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([city])
+  @@index([danceStyle])
+  @@index([dateTime])
+  @@index([organizerId])
+}
+
+model Booking {
+  id          String        @id @default(cuid())
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  workshop    Workshop      @relation(fields: [workshopId], references: [id], onDelete: Cascade)
+  workshopId  String
+  seatsBooked Int           @default(1)
+  totalAmount Int           @default(0)
+  upiId       String?
+  status      BookingStatus @default(CONFIRMED)
+  guests      BookingGuest[]
+  bookedAt    DateTime      @default(now())
+
+  @@unique([userId, workshopId])
+  @@index([workshopId])
+}
+
+model BookingGuest {
+  id          String  @id @default(cuid())
+  booking     Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  bookingId   String
+  name        String
+  phone       String
+  ticketToken String  @unique @default(cuid())
+  attended    Boolean @default(false)
+}

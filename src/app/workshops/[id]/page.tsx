@@ -97,6 +97,14 @@ export default async function WorkshopDetailPage({
             label: "Availability",
             value: `${seatsLeft} / ${workshop.maxSeats} seats left`,
           },
+          ...(workshop.durationMinutes ? [{
+            label: "Duration",
+            value: `${Math.floor(workshop.durationMinutes / 60) > 0 ? Math.floor(workshop.durationMinutes / 60) + "h " : ""}${workshop.durationMinutes % 60 > 0 ? (workshop.durationMinutes % 60) + "m" : ""}`.trim(),
+          }] : []),
+          ...(workshop.ageLimit ? [{
+            label: "Age Limit",
+            value: `${workshop.ageLimit}+ only`,
+          }] : []),
         ].map((item) => (
           <div key={item.label} className="rounded-xl border border-border/50 bg-card p-4 shadow-sm">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">

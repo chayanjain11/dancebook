@@ -33,6 +33,8 @@ interface Workshop {
   price: number;
   maxSeats: number;
   bookedSeats: number;
+  durationMinutes: number | null;
+  ageLimit: number | null;
 }
 
 export default function EditWorkshopPage() {
@@ -78,6 +80,8 @@ export default function EditWorkshopPage() {
       description: formData.get("description") as string,
       price: Number(formData.get("price")),
       maxSeats: Number(formData.get("maxSeats")),
+      durationMinutes: formData.get("durationMinutes") ? Number(formData.get("durationMinutes")) : null,
+      ageLimit: formData.get("ageLimit") ? Number(formData.get("ageLimit")) : null,
       imageUrl: imageUrl || undefined,
     };
     const res = await fetch(`/api/workshops/${params.id}`, {
@@ -207,6 +211,19 @@ export default function EditWorkshopPage() {
                   {hasBookings && (
                     <p className="text-xs text-muted-foreground">Minimum {workshop.bookedSeats} (already booked)</p>
                   )}
+                </div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="durationMinutes">Duration (minutes)</Label>
+                  <Input id="durationMinutes" name="durationMinutes" type="number" min={15} max={480} placeholder="e.g., 90" defaultValue={workshop.durationMinutes ?? ""} className="h-11 rounded-lg" />
+                  <p className="text-xs text-muted-foreground">Optional. 15 min to 8 hours</p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="ageLimit">Minimum Age Limit</Label>
+                  <Input id="ageLimit" name="ageLimit" type="number" min={5} max={99} placeholder="e.g., 18" defaultValue={workshop.ageLimit ?? ""} className="h-11 rounded-lg" />
+                  <p className="text-xs text-muted-foreground">Optional. Leave empty for all ages</p>
                 </div>
               </div>
             </CardContent>

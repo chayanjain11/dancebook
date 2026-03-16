@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import type { Role } from "@/generated/prisma/client";
@@ -14,6 +15,7 @@ declare module "next-auth" {
       name: string;
       email: string;
       role: Role;
+      image?: string | null;
     };
   }
 }
@@ -22,11 +24,22 @@ declare module "@auth/core/jwt" {
   interface JWT {
     id: string;
     role: Role;
+    needsRole?: boolean;
   }
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
+    Google({
+      clientId: process.env.AUTH_GOOGLE_ID!,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET!,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+        },
+      },
+    }),
     Credentials({
       credentials: {
         email: {},
@@ -42,7 +55,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           where: { email },
         });
 
-        if (!user) return null;
+        if (!user || !user.passwordHash) return null;
 
         const isValid = await bcrypt.compare(password, user.passwordHash);
         if (!isValid) return null;
@@ -57,16 +70,69 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
+    async signIn({ user, account }) {
+      if (account?.provider === "google") {
+        const email = user.email!;
+        const existingUser = await prisma.user.findUnique({
+          where: { email },
+        });
+
+        if (existingUser) {
+          // Link Google account if not already linked
+          if (!existingUser.googleId) {
+            await prisma.user.update({
+              where: { email },
+              data: {
+                googleId: account.providerAccountId,
+                image: user.image,
+              },
+            });
+          }
+        } else {
+          // Create new user from Google sign-in (default CUSTOMER, will pick role next)
+          await prisma.user.create({
+            data: {
+              email,
+              name: user.name || "User",
+              googleId: account.providerAccountId,
+              image: user.image,
+              role: "CUSTOMER",
+              phone: "",
+            },
+          });
+        }
+      }
+      return true;
+    },
+    async jwt({ token, user, account }) {
+      if (user && account?.provider === "google") {
+        const dbUser = await prisma.user.findUnique({
+          where: { email: user.email! },
+        });
+        if (dbUser) {
+          token.id = dbUser.id;
+          token.role = dbUser.role;
+          token.needsRole = !dbUser.phone;
+        }
+      } else if (user) {
         token.id = user.id!;
         token.role = user.role;
+      } else if (token.needsRole) {
+        // Re-check if user has picked a role since the token was issued
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id },
+        });
+        if (dbUser && dbUser.phone) {
+          token.needsRole = false;
+          token.role = dbUser.role;
+        }
       }
       return token;
     },
     async session({ session, token }) {
       session.user.id = token.id;
       session.user.role = token.role;
+      (session as any).needsRole = token.needsRole;
       return session;
     },
   },

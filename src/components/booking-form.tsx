@@ -29,6 +29,7 @@ interface BookingFormProps {
 interface Guest {
   name: string;
   phone: string;
+  whatsapp: string;
 }
 
 const slideVariants = {
@@ -54,7 +55,7 @@ export function BookingForm({
 }: BookingFormProps) {
   const router = useRouter();
   const [seats, setSeats] = useState(1);
-  const [guests, setGuests] = useState<Guest[]>([{ name: "", phone: "" }]);
+  const [guests, setGuests] = useState<Guest[]>([{ name: "", phone: "", whatsapp: "" }]);
   const [upiId, setUpiId] = useState("");
   const [step, setStep] = useState<"select" | "details" | "payment">("select");
   const [direction, setDirection] = useState(0);
@@ -154,7 +155,7 @@ export function BookingForm({
   function handleSeatChange(count: number) {
     setSeats(count);
     const newGuests = Array.from({ length: count }, (_, i) =>
-      guests[i] || { name: "", phone: "" }
+      guests[i] || { name: "", phone: "", whatsapp: "" }
     );
     setGuests(newGuests);
   }
@@ -306,6 +307,16 @@ export function BookingForm({
                           className="h-11 rounded-lg"
                         />
                       </div>
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor={`guest-whatsapp-${i}`}>WhatsApp Number (optional)</Label>
+                      <Input
+                        id={`guest-whatsapp-${i}`}
+                        value={guest.whatsapp}
+                        onChange={(e) => updateGuest(i, "whatsapp", e.target.value)}
+                        placeholder="WhatsApp number for updates"
+                        className="h-11 rounded-lg"
+                      />
                     </div>
                   </motion.div>
                 ))}

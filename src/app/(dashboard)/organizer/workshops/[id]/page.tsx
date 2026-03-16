@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { SendNotificationForm } from "@/components/send-notification-form";
 
 export default async function OrganizerWorkshopDetailPage({
   params,
@@ -24,7 +25,7 @@ export default async function OrganizerWorkshopDetailPage({
         where: { status: "CONFIRMED" },
         include: {
           user: { select: { name: true, phone: true } },
-          guests: { select: { name: true, phone: true, attended: true } },
+          guests: { select: { name: true, phone: true, whatsapp: true, attended: true } },
         },
         orderBy: { bookedAt: "desc" },
       },
@@ -88,6 +89,8 @@ export default async function OrganizerWorkshopDetailPage({
                 minute: "2-digit",
               })}{" "}
               · {workshop.venue}, {workshop.city}
+              {workshop.durationMinutes && ` · ${Math.floor(workshop.durationMinutes / 60) > 0 ? Math.floor(workshop.durationMinutes / 60) + "h " : ""}${workshop.durationMinutes % 60 > 0 ? (workshop.durationMinutes % 60) + "m" : ""}`}
+              {workshop.ageLimit && ` · ${workshop.ageLimit}+ only`}
             </p>
           </div>
           <div className="flex gap-2">
@@ -120,7 +123,10 @@ export default async function OrganizerWorkshopDetailPage({
         </div>
       </div>
 
-      <Separator className="mb-6" />
+      {/* Notification Form */}
+      <SendNotificationForm workshopId={workshop.id} hasBookings={totalBooked > 0} />
+
+      <Separator className="my-6" />
 
       <div>
         <h2 className="text-lg font-bold mb-4">
@@ -142,6 +148,7 @@ export default async function OrganizerWorkshopDetailPage({
                   <th className="px-5 py-3.5">#</th>
                   <th className="px-5 py-3.5">Attendee Name</th>
                   <th className="px-5 py-3.5">Phone</th>
+                  <th className="px-5 py-3.5">WhatsApp</th>
                   <th className="px-5 py-3.5">Booked By</th>
                   <th className="px-5 py-3.5">Booking Date</th>
                   <th className="px-5 py-3.5">Attendance</th>
@@ -167,6 +174,9 @@ export default async function OrganizerWorkshopDetailPage({
                             {guest.name}
                           </td>
                           <td className="px-5 py-3.5">{guest.phone}</td>
+                          <td className="px-5 py-3.5 text-muted-foreground">
+                            {guest.whatsapp || "—"}
+                          </td>
                           <td className="px-5 py-3.5 text-muted-foreground">
                             {booking.user.name}
                           </td>
@@ -201,6 +211,7 @@ export default async function OrganizerWorkshopDetailPage({
                         <td className="px-5 py-3.5">
                           {booking.user.phone || "N/A"}
                         </td>
+                        <td className="px-5 py-3.5 text-muted-foreground">—</td>
                         <td className="px-5 py-3.5 text-muted-foreground">
                           {booking.user.name}
                         </td>

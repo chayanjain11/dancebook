@@ -2,11 +2,22 @@
 
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
+import { useRouter, usePathname } from "next/navigation";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
 export function Navbar() {
   const { data: session } = useSession();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // Redirect new Google users to role selection
+  useEffect(() => {
+    if (session && (session as any).needsRole && pathname !== "/choose-role") {
+      router.push("/choose-role");
+    }
+  }, [session, pathname, router]);
 
   const dashboardPath =
     session?.user?.role === "ORGANIZER"
@@ -21,8 +32,9 @@ export function Navbar() {
       className="sticky top-0 z-50 glass border-b"
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-        <Link href="/" className="text-xl font-extrabold tracking-tight">
-          <span className="gradient-text">Dance</span>Book
+        <Link href="/" className="text-xl font-extrabold tracking-tight flex items-center gap-1.5">
+          <span className="inline-flex items-center justify-center h-8 w-8 rounded-lg bg-primary text-primary-foreground text-sm font-black shadow-md shadow-primary/30">B</span>
+          <span><span className="gradient-text">Book</span>Your<span className="gradient-text">Dance</span></span>
         </Link>
 
         <nav className="flex items-center gap-1">

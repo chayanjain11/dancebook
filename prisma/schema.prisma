@@ -20,11 +20,13 @@ enum BookingStatus {
 model User {
   id           String    @id @default(cuid())
   email        String    @unique
-  passwordHash String
+  passwordHash String?
   name         String
   phone        String?
   role         Role      @default(CUSTOMER)
   city         String?
+  googleId     String?   @unique
+  image        String?
   workshops    Workshop[]
   bookings     Booking[]
   createdAt    DateTime  @default(now())
@@ -32,22 +34,26 @@ model User {
 }
 
 model Workshop {
-  id          String    @id @default(cuid())
-  title       String
-  danceStyle  String
-  description String
-  artistName  String    @default("")
-  imageUrl    String?
-  dateTime    DateTime
-  city        String
-  venue       String
-  price       Int
-  maxSeats    Int
-  organizer   User      @relation(fields: [organizerId], references: [id], onDelete: Cascade)
-  organizerId String
-  bookings    Booking[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id              String    @id @default(cuid())
+  title           String
+  danceStyle      String
+  description     String
+  artistName      String    @default("")
+  imageUrl        String?
+  dateTime        DateTime
+  city            String
+  venue           String
+  price           Int
+  maxSeats        Int
+  durationMinutes Int?
+  ageLimit        Int?
+  reminderSent    Boolean   @default(false)
+  organizer       User      @relation(fields: [organizerId], references: [id], onDelete: Cascade)
+  organizerId     String
+  bookings        Booking[]
+  notifications   WorkshopNotification[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
   @@index([city])
   @@index([danceStyle])
@@ -78,6 +84,19 @@ model BookingGuest {
   bookingId   String
   name        String
   phone       String
+  whatsapp    String?
   ticketToken String  @unique @default(cuid())
   attended    Boolean @default(false)
+}
+
+model WorkshopNotification {
+  id         String   @id @default(cuid())
+  workshop   Workshop @relation(fields: [workshopId], references: [id], onDelete: Cascade)
+  workshopId String
+  type       String
+  subject    String
+  message    String
+  sentAt     DateTime @default(now())
+
+  @@index([workshopId])
 }

@@ -102,6 +102,7 @@ export async function POST(request: Request) {
           create: guests.map((g) => ({
             name: g.name,
             phone: g.phone,
+            whatsapp: g.whatsapp || null,
           })),
         },
       },

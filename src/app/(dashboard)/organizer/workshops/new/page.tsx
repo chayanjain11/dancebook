@@ -32,6 +32,8 @@ interface WorkshopData {
   venue: string;
   price: number;
   maxSeats: number;
+  durationMinutes?: number;
+  ageLimit?: number;
 }
 
 export default function NewWorkshopPage() {
@@ -70,6 +72,8 @@ export default function NewWorkshopPage() {
       venue: fd.get("venue") as string,
       price: Number(fd.get("price")),
       maxSeats: Number(fd.get("maxSeats")),
+      durationMinutes: fd.get("durationMinutes") ? Number(fd.get("durationMinutes")) : undefined,
+      ageLimit: fd.get("ageLimit") ? Number(fd.get("ageLimit")) : undefined,
     });
     setStep("preview");
   }
@@ -133,6 +137,8 @@ export default function NewWorkshopPage() {
                     { label: "Location", value: `${formData.venue}, ${formData.city}` },
                     { label: "Price", value: formData.price === 0 ? "Free" : `₹${formData.price} / seat` },
                     { label: "Max Seats", value: formData.maxSeats },
+                    ...(formData.durationMinutes ? [{ label: "Duration", value: `${Math.floor(formData.durationMinutes / 60) > 0 ? Math.floor(formData.durationMinutes / 60) + "h " : ""}${formData.durationMinutes % 60 > 0 ? (formData.durationMinutes % 60) + "m" : ""}`.trim() }] : []),
+                    ...(formData.ageLimit ? [{ label: "Age Limit", value: `${formData.ageLimit}+ only` }] : []),
                   ].map((item) => (
                     <div key={item.label} className="rounded-xl border border-border/50 bg-muted/30 p-4">
                       <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">{item.label}</p>
@@ -227,6 +233,18 @@ export default function NewWorkshopPage() {
                     <div className="space-y-2">
                       <Label htmlFor="maxSeats">Max Seats</Label>
                       <Input id="maxSeats" name="maxSeats" type="number" min={1} placeholder="e.g., 30" defaultValue={formData?.maxSeats} required className="h-11 rounded-lg" />
+                    </div>
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="durationMinutes">Duration (minutes)</Label>
+                      <Input id="durationMinutes" name="durationMinutes" type="number" min={15} max={480} placeholder="e.g., 90" defaultValue={formData?.durationMinutes} className="h-11 rounded-lg" />
+                      <p className="text-xs text-muted-foreground">Optional. 15 min to 8 hours</p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="ageLimit">Minimum Age Limit</Label>
+                      <Input id="ageLimit" name="ageLimit" type="number" min={5} max={99} placeholder="e.g., 18" defaultValue={formData?.ageLimit} className="h-11 rounded-lg" />
+                      <p className="text-xs text-muted-foreground">Optional. Leave empty for all ages</p>
                     </div>
                   </div>
                 </CardContent>

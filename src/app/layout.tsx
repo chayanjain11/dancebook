@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DanceBook - Book Dance Workshops",
+  title: "BookYourDance - Book Dance Workshops",
   description: "Discover and book dance workshops near you",
 };
 
@@ -32,6 +33,7 @@ export default function RootLayout({
         <Providers>
           <Navbar />
           <main className="mx-auto max-w-6xl px-4 py-8">{children}</main>
+          <Footer />
         </Providers>
       </body>
     </html>

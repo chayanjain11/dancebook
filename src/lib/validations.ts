@@ -24,6 +24,8 @@ export const workshopSchema = z.object({
   venue: z.string().min(3, "Venue is required"),
   price: z.number().min(0, "Price must be non-negative"),
   maxSeats: z.number().int().min(1, "Must have at least 1 seat"),
+  durationMinutes: z.number().int().min(15).max(480).optional(),
+  ageLimit: z.number().int().min(5).max(99).optional(),
 });
 
 // Only editable fields for update — dateTime, city, venue, artistName are locked
@@ -34,11 +36,14 @@ export const workshopUpdateSchema = z.object({
   imageUrl: z.string().optional(),
   price: z.number().min(0, "Price must be non-negative"),
   maxSeats: z.number().int().min(1, "Must have at least 1 seat"),
+  durationMinutes: z.number().int().min(15).max(480).optional().nullable(),
+  ageLimit: z.number().int().min(5).max(99).optional().nullable(),
 });
 
 const guestSchema = z.object({
   name: z.string().min(2, "Guest name is required"),
   phone: z.string().min(10, "Guest phone is required"),
+  whatsapp: z.string().min(10).optional().or(z.literal("")),
 });
 
 export const bookingSchema = z.object({
@@ -46,6 +51,12 @@ export const bookingSchema = z.object({
   seatsBooked: z.number().int().min(1).max(10, "Max 10 seats per booking"),
   guests: z.array(guestSchema).min(1, "At least one guest is required"),
   upiId: z.string().min(3, "UPI ID is required"),
+});
+
+export const workshopNotificationSchema = z.object({
+  type: z.enum(["CANCELLATION", "DELAY", "ANNOUNCEMENT"]),
+  subject: z.string().min(3, "Subject is required"),
+  message: z.string().min(10, "Message must be at least 10 characters"),
 });
 
 export type SignUpInput = z.infer<typeof signUpSchema>;

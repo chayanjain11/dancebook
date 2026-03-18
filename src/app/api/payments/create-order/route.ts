@@ -46,7 +46,7 @@ export async function POST(request: Request) {
     const order = await razorpay.orders.create({
       amount: totalAmount * 100, // Razorpay expects paise
       currency: "INR",
-      receipt: `booking_${workshopId}_${session.user.id}_${Date.now()}`,
+      receipt: `bkng_${Date.now()}`,
       notes: {
         workshopId,
         userId: session.user.id,
@@ -61,8 +61,15 @@ export async function POST(request: Request) {
       keyId: process.env.RAZORPAY_KEY_ID,
     });
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err);
-    console.error("Razorpay order error:", err);
+    console.error("Razorpay order error:", JSON.stringify(err, Object.getOwnPropertyNames(err as object)));
+    let message = "Unknown error";
+    if (err instanceof Error) {
+      message = err.message;
+    } else if (typeof err === "object" && err !== null) {
+      message = JSON.stringify(err);
+    } else {
+      message = String(err);
+    }
     return NextResponse.json({ error: "Failed to create order", details: message }, { status: 500 });
   }
 }

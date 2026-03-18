@@ -237,13 +237,13 @@ export function BookingForm({
       name: "BookYourDance",
       description: `Workshop Booking - ${seats} seat(s)`,
       order_id: orderData.orderId,
-      handler: async (response: {
+      handler: (response: {
         razorpay_order_id: string;
         razorpay_payment_id: string;
         razorpay_signature: string;
       }) => {
         // Step 3: Verify payment and create booking
-        const verifyRes = await fetch("/api/payments/verify", {
+        fetch("/api/payments/verify", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -254,16 +254,21 @@ export function BookingForm({
             seatsBooked: seats,
             guests,
           }),
-        });
-
-        const verifyData = await verifyRes.json();
-        setLoading(false);
-        if (!verifyRes.ok) {
-          setError(verifyData.error || "Payment verification failed");
-        } else {
-          setSuccess(true);
-          router.refresh();
-        }
+        })
+          .then((res) => res.json().then((data) => ({ ok: res.ok, data })))
+          .then(({ ok, data }) => {
+            setLoading(false);
+            if (!ok) {
+              setError(data.details || data.error || "Payment verification failed");
+            } else {
+              setSuccess(true);
+              router.refresh();
+            }
+          })
+          .catch(() => {
+            setLoading(false);
+            setError("Payment succeeded but booking failed. Please contact support.");
+          });
       },
       modal: {
         ondismiss: () => {

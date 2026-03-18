@@ -88,7 +88,14 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json(booking, { status: 201 });
-  } catch {
-    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
+  } catch (err: unknown) {
+    console.error("Payment verify error:", err);
+    let message = "Unknown error";
+    if (err instanceof Error) {
+      message = err.message;
+    } else if (typeof err === "object" && err !== null) {
+      message = JSON.stringify(err);
+    }
+    return NextResponse.json({ error: "Something went wrong", details: message }, { status: 500 });
   }
 }

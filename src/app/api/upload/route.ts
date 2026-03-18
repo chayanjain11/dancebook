@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { writeFile } from "fs/promises";
-import path from "path";
+import { put } from "@vercel/blob";
 
 export async function POST(request: Request) {
   try {
@@ -33,13 +32,13 @@ export async function POST(request: Request) {
     }
 
     const ext = file.name.split(".").pop() || "jpg";
-    const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-    const filepath = path.join(process.cwd(), "public", "uploads", filename);
+    const filename = `workshops/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
 
-    const bytes = await file.arrayBuffer();
-    await writeFile(filepath, Buffer.from(bytes));
+    const blob = await put(filename, file, {
+      access: "public",
+    });
 
-    return NextResponse.json({ url: `/uploads/${filename}` });
+    return NextResponse.json({ url: blob.url });
   } catch {
     return NextResponse.json(
       { error: "Upload failed" },

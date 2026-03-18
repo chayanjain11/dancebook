@@ -67,10 +67,12 @@ model Booking {
   userId      String
   workshop    Workshop      @relation(fields: [workshopId], references: [id], onDelete: Cascade)
   workshopId  String
-  seatsBooked Int           @default(1)
-  totalAmount Int           @default(0)
-  upiId       String?
-  status      BookingStatus @default(CONFIRMED)
+  seatsBooked        Int           @default(1)
+  totalAmount        Int           @default(0)
+  upiId              String?
+  razorpayOrderId    String?       @unique
+  razorpayPaymentId  String?       @unique
+  status             BookingStatus @default(CONFIRMED)
   guests      BookingGuest[]
   bookedAt    DateTime      @default(now())
 

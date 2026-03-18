@@ -32,6 +32,12 @@ interface Guest {
   whatsapp: string;
 }
 
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
+
 const slideVariants = {
   enter: (direction: number) => ({
     x: direction > 0 ? 30 : -30,
@@ -56,7 +62,6 @@ export function BookingForm({
   const router = useRouter();
   const [seats, setSeats] = useState(1);
   const [guests, setGuests] = useState<Guest[]>([{ name: "", phone: "", whatsapp: "" }]);
-  const [upiId, setUpiId] = useState("");
   const [step, setStep] = useState<"select" | "details" | "payment">("select");
   const [direction, setDirection] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -166,25 +171,116 @@ export function BookingForm({
     setGuests(updated);
   }
 
+  function loadRazorpayScript(): Promise<boolean> {
+    return new Promise((resolve) => {
+      if (window.Razorpay) {
+        resolve(true);
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  }
+
   async function handleBook() {
     setLoading(true);
     setError("");
 
-    const res = await fetch("/api/bookings", {
+    // Free workshop — book directly
+    if (totalAmount === 0) {
+      const res = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ workshopId, seatsBooked: seats, guests }),
+      });
+      const data = await res.json();
+      setLoading(false);
+      if (!res.ok) {
+        setError(data.error || "Booking failed");
+      } else {
+        setSuccess(true);
+        router.refresh();
+      }
+      return;
+    }
+
+    // Paid workshop — Razorpay flow
+    const scriptLoaded = await loadRazorpayScript();
+    if (!scriptLoaded) {
+      setError("Failed to load payment gateway. Please try again.");
+      setLoading(false);
+      return;
+    }
+
+    // Step 1: Create Razorpay order
+    const orderRes = await fetch("/api/payments/create-order", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ workshopId, seatsBooked: seats, guests, upiId }),
+      body: JSON.stringify({ workshopId, seatsBooked: seats }),
     });
 
-    const data = await res.json();
-    setLoading(false);
-
-    if (!res.ok) {
-      setError(data.error || "Booking failed");
-    } else {
-      setSuccess(true);
-      router.refresh();
+    const orderData = await orderRes.json();
+    if (!orderRes.ok) {
+      setError(orderData.error || "Failed to create payment order");
+      setLoading(false);
+      return;
     }
+
+    // Step 2: Open Razorpay checkout
+    const options = {
+      key: orderData.keyId,
+      amount: orderData.amount,
+      currency: orderData.currency,
+      name: "BookYourDance",
+      description: `Workshop Booking - ${seats} seat(s)`,
+      order_id: orderData.orderId,
+      handler: async (response: {
+        razorpay_order_id: string;
+        razorpay_payment_id: string;
+        razorpay_signature: string;
+      }) => {
+        // Step 3: Verify payment and create booking
+        const verifyRes = await fetch("/api/payments/verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+            workshopId,
+            seatsBooked: seats,
+            guests,
+          }),
+        });
+
+        const verifyData = await verifyRes.json();
+        setLoading(false);
+        if (!verifyRes.ok) {
+          setError(verifyData.error || "Payment verification failed");
+        } else {
+          setSuccess(true);
+          router.refresh();
+        }
+      },
+      modal: {
+        ondismiss: () => {
+          setLoading(false);
+        },
+      },
+      theme: {
+        color: "#7c3aed",
+      },
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.on("payment.failed", () => {
+      setError("Payment failed. Please try again.");
+      setLoading(false);
+    });
+    rzp.open();
   }
 
   return (
@@ -193,7 +289,7 @@ export function BookingForm({
         <CardTitle className="text-xl">Book This Workshop</CardTitle>
         {/* Step indicator */}
         <div className="flex items-center gap-2 mt-3">
-          {["Seats", "Attendees", "Payment"].map((label, i) => (
+          {["Seats", "Attendees", "Confirm"].map((label, i) => (
             <div key={label} className="flex items-center gap-2 flex-1">
               <div className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold transition-all duration-300 ${
                 i <= stepIndex
@@ -344,18 +440,10 @@ export function BookingForm({
                 </div>
 
                 {totalAmount > 0 && (
-                  <div className="space-y-2">
-                    <Label htmlFor="upiId">UPI ID</Label>
-                    <Input
-                      id="upiId"
-                      value={upiId}
-                      onChange={(e) => setUpiId(e.target.value)}
-                      placeholder="yourname@upi"
-                      required
-                      className="h-11 rounded-lg"
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Enter your UPI ID to complete payment of ₹{totalAmount}
+                  <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 text-center">
+                    <p className="text-sm text-muted-foreground">
+                      You will be redirected to <span className="font-semibold text-foreground">Razorpay</span> to complete the payment of{" "}
+                      <span className="font-bold text-primary">₹{totalAmount}</span>
                     </p>
                   </div>
                 )}
@@ -391,20 +479,20 @@ export function BookingForm({
               goNext();
             }}
           >
-            Next: Payment
+            Next: Confirm & Pay
           </Button>
         )}
         {step === "payment" && (
           <Button
             className="w-full rounded-full h-11 shadow-md shadow-primary/20"
             onClick={handleBook}
-            disabled={loading || (totalAmount > 0 && upiId.length < 3)}
+            disabled={loading}
           >
             {loading
               ? "Processing..."
               : totalAmount === 0
               ? "Confirm Booking"
-              : `Pay ₹${totalAmount} & Book`}
+              : `Pay ₹${totalAmount}`}
           </Button>
         )}
       </CardFooter>

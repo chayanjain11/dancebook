@@ -50,7 +50,7 @@ export const bookingSchema = z.object({
   workshopId: z.string().min(1, "Workshop ID is required"),
   seatsBooked: z.number().int().min(1).max(10, "Max 10 seats per booking"),
   guests: z.array(guestSchema).min(1, "At least one guest is required"),
-  upiId: z.string().min(3, "UPI ID is required"),
+  upiId: z.string().optional(),
 });
 
 export const workshopNotificationSchema = z.object({

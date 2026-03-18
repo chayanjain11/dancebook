@@ -60,7 +60,9 @@ export async function POST(request: Request) {
       currency: order.currency,
       keyId: process.env.RAZORPAY_KEY_ID,
     });
-  } catch {
-    return NextResponse.json({ error: "Failed to create order" }, { status: 500 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("Razorpay order error:", err);
+    return NextResponse.json({ error: "Failed to create order", details: message }, { status: 500 });
   }
 }

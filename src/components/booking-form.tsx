@@ -224,7 +224,7 @@ export function BookingForm({
 
     const orderData = await orderRes.json();
     if (!orderRes.ok) {
-      setError(orderData.error || "Failed to create payment order");
+      setError(orderData.details || orderData.error || "Failed to create payment order");
       setLoading(false);
       return;
     }

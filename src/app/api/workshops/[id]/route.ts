@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { workshopUpdateSchema } from "@/lib/validations";
+import { sendBulkEmail, notificationEmailHtml } from "@/lib/email";
 
 export async function GET(
   _request: Request,
@@ -53,7 +54,7 @@ export async function PUT(
       include: {
         bookings: {
           where: { status: "CONFIRMED" },
-          select: { seatsBooked: true },
+          select: { seatsBooked: true, user: { select: { email: true, name: true } } },
         },
       },
     });
@@ -90,15 +91,45 @@ export async function PUT(
       );
     }
 
-    const { imageUrl, ...rest } = parsed.data;
+    // Detect date/time/venue/city changes for notification
+    const changes: string[] = [];
+    if (parsed.data.dateTime && new Date(parsed.data.dateTime).getTime() !== new Date(workshop.dateTime).getTime()) {
+      changes.push(`Date & Time changed to ${new Date(parsed.data.dateTime).toLocaleString("en-IN", { dateStyle: "full", timeStyle: "short" })}`);
+    }
+    if (parsed.data.venue && parsed.data.venue !== workshop.venue) {
+      changes.push(`Venue changed to ${parsed.data.venue}`);
+    }
+    if (parsed.data.city && parsed.data.city !== workshop.city) {
+      changes.push(`City changed to ${parsed.data.city}`);
+    }
+
+    const { imageUrl, dateTime, ...rest } = parsed.data;
 
     const updated = await prisma.workshop.update({
       where: { id },
       data: {
         ...rest,
+        ...(dateTime ? { dateTime: new Date(dateTime) } : {}),
         imageUrl: imageUrl || workshop.imageUrl,
       },
     });
+
+    // Send email notification if date/time/venue/city changed and there are bookings
+    if (changes.length > 0 && bookedSeats > 0) {
+      const recipients = workshop.bookings.map((b) => ({
+        email: b.user.email,
+        name: b.user.name,
+      }));
+      const subject = `Workshop Updated: ${workshop.title}`;
+      const message = changes.join("\n");
+      const html = notificationEmailHtml(workshop.title, "DELAY", subject, message);
+
+      await prisma.workshopNotification.create({
+        data: { workshopId: id, type: "DELAY", subject, message },
+      });
+
+      sendBulkEmail(recipients, subject, html).catch(console.error);
+    }
 
     return NextResponse.json(updated);
   } catch {

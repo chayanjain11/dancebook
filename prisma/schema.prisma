@@ -43,6 +43,7 @@ model Workshop {
   dateTime        DateTime
   city            String
   venue           String
+  mapUrl          String?
   price           Int
   maxSeats        Int
   durationMinutes Int?
@@ -76,7 +77,7 @@ model Booking {
   guests      BookingGuest[]
   bookedAt    DateTime      @default(now())
 
-  @@unique([userId, workshopId])
+  @@index([userId, workshopId])
   @@index([workshopId])
 }
 
@@ -89,6 +90,16 @@ model BookingGuest {
   whatsapp    String?
   ticketToken String  @unique @default(cuid())
   attended    Boolean @default(false)
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  email     String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([email])
 }
 
 model WorkshopNotification {

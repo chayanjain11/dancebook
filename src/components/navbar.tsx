@@ -1,23 +1,29 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 export function Navbar() {
   const { data: session } = useSession();
   const router = useRouter();
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  // Redirect new Google users to role selection
   useEffect(() => {
     if (session && (session as any).needsRole && pathname !== "/choose-role") {
       router.push("/choose-role");
     }
   }, [session, pathname, router]);
+
+  // Close menu on route change
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
 
   const dashboardPath =
     session?.user?.role === "ORGANIZER"
@@ -37,7 +43,8 @@ export function Navbar() {
           <span><span className="gradient-text">Book</span>Your<span className="gradient-text">Dance</span></span>
         </Link>
 
-        <nav className="flex items-center gap-1">
+        {/* Desktop nav */}
+        <nav className="hidden md:flex items-center gap-1">
           <Link
             href="/workshops"
             className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
@@ -85,7 +92,77 @@ export function Navbar() {
             </div>
           )}
         </nav>
+
+        {/* Mobile hamburger */}
+        <button
+          className="md:hidden flex flex-col gap-1.5 p-2"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle menu"
+        >
+          <span className={`block h-0.5 w-5 bg-foreground transition-all duration-300 ${menuOpen ? "rotate-45 translate-y-2" : ""}`} />
+          <span className={`block h-0.5 w-5 bg-foreground transition-all duration-300 ${menuOpen ? "opacity-0" : ""}`} />
+          <span className={`block h-0.5 w-5 bg-foreground transition-all duration-300 ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
+        </button>
       </div>
+
+      {/* Mobile menu */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden overflow-hidden border-t"
+          >
+            <nav className="flex flex-col gap-1 p-4">
+              <Link
+                href="/workshops"
+                className="rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent"
+              >
+                Browse Workshops
+              </Link>
+
+              {session ? (
+                <>
+                  <Link
+                    href={dashboardPath}
+                    className="rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent"
+                  >
+                    Dashboard
+                  </Link>
+                  {session.user?.role === "ORGANIZER" && (
+                    <Link
+                      href="/organizer/scan"
+                      className="rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent"
+                    >
+                      Scan QR
+                    </Link>
+                  )}
+                  <button
+                    className="rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent text-left"
+                    onClick={() => signOut({ callbackUrl: "/" })}
+                  >
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <div className="flex gap-2 mt-2">
+                  <Link href="/login" className="flex-1">
+                    <Button variant="outline" className="w-full rounded-full">
+                      Log In
+                    </Button>
+                  </Link>
+                  <Link href="/signup" className="flex-1">
+                    <Button className="w-full rounded-full shadow-sm shadow-primary/20">
+                      Sign Up
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.header>
   );
 }

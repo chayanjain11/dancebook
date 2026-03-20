@@ -22,18 +22,22 @@ export const workshopSchema = z.object({
   dateTime: z.string().refine((val) => !isNaN(Date.parse(val)), "Invalid date"),
   city: z.string().min(2, "City is required"),
   venue: z.string().min(3, "Venue is required"),
+  mapUrl: z.string().url("Invalid map URL").optional().or(z.literal("")),
   price: z.number().min(0, "Price must be non-negative"),
   maxSeats: z.number().int().min(1, "Must have at least 1 seat"),
   durationMinutes: z.number().int().min(15).max(480).optional(),
   ageLimit: z.number().int().min(5).max(99).optional(),
 });
 
-// Only editable fields for update — dateTime, city, venue, artistName are locked
 export const workshopUpdateSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
   danceStyle: z.string().min(2, "Dance style is required"),
   description: z.string().min(10, "Description must be at least 10 characters"),
   imageUrl: z.string().optional(),
+  dateTime: z.string().refine((val) => !isNaN(Date.parse(val)), "Invalid date").optional(),
+  city: z.string().min(2, "City is required").optional(),
+  venue: z.string().min(3, "Venue is required").optional(),
+  mapUrl: z.string().url("Invalid map URL").optional().or(z.literal("")),
   price: z.number().min(0, "Price must be non-negative"),
   maxSeats: z.number().int().min(1, "Must have at least 1 seat"),
   durationMinutes: z.number().int().min(15).max(480).optional().nullable(),

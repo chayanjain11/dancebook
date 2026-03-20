@@ -33,9 +33,7 @@ export default async function WorkshopDetailPage({
   );
   const seatsLeft = workshop.maxSeats - bookedSeats;
 
-  const alreadyBooked = session?.user
-    ? workshop.bookings.some((b) => b.userId === session.user.id)
-    : false;
+  const alreadyBooked = false;
 
   return (
     <div className="mx-auto max-w-2xl">
@@ -125,6 +123,32 @@ export default async function WorkshopDetailPage({
           {workshop.description}
         </p>
       </div>
+
+      {workshop.mapUrl && (
+        <>
+          <Separator className="my-6" />
+          <div>
+            <h3 className="mb-3 text-lg font-bold">Venue Location</h3>
+            <a
+              href={workshop.mapUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-xl border border-border/50 bg-card px-5 py-4 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 w-full"
+            >
+              <svg className="h-5 w-5 text-red-500 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+              </svg>
+              <div className="min-w-0 flex-1">
+                <p className="font-semibold text-sm">{workshop.venue}, {workshop.city}</p>
+                <p className="text-xs text-primary">Open in Google Maps</p>
+              </div>
+              <svg className="h-4 w-4 text-muted-foreground shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+          </div>
+        </>
+      )}
 
       <Separator className="my-6" />
 

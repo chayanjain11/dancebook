@@ -2,8 +2,8 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { WorkshopTabs } from "@/components/workshop-tabs";
 
 export default async function OrganizerWorkshopsPage() {
   const session = await auth();
@@ -31,6 +31,37 @@ export default async function OrganizerWorkshopsPage() {
     0
   );
 
+  const now = new Date();
+  const upcoming = workshops
+    .filter((w) => new Date(w.dateTime) >= now)
+    .map((w) => ({
+      id: w.id,
+      title: w.title,
+      artistName: w.artistName,
+      danceStyle: w.danceStyle,
+      dateTime: w.dateTime.toISOString(),
+      city: w.city,
+      price: w.price,
+      maxSeats: w.maxSeats,
+      totalBooked: w.bookings.reduce((s, b) => s + b.seatsBooked, 0),
+      revenue: w.bookings.reduce((s, b) => s + b.seatsBooked * w.price, 0),
+    }));
+
+  const completed = workshops
+    .filter((w) => new Date(w.dateTime) < now)
+    .map((w) => ({
+      id: w.id,
+      title: w.title,
+      artistName: w.artistName,
+      danceStyle: w.danceStyle,
+      dateTime: w.dateTime.toISOString(),
+      city: w.city,
+      price: w.price,
+      maxSeats: w.maxSeats,
+      totalBooked: w.bookings.reduce((s, b) => s + b.seatsBooked, 0),
+      revenue: w.bookings.reduce((s, b) => s + b.seatsBooked * w.price, 0),
+    }));
+
   return (
     <div className="min-h-screen">
       {/* Dashboard Header */}
@@ -48,7 +79,7 @@ export default async function OrganizerWorkshopsPage() {
             </Button>
           </Link>
         </div>
-        <div className="mt-6 grid grid-cols-3 gap-4">
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
           {[
             { value: workshops.length, label: "Total Workshops" },
             { value: totalSeats, label: "Seats Booked" },
@@ -75,68 +106,7 @@ export default async function OrganizerWorkshopsPage() {
           </Link>
         </div>
       ) : (
-        <div className="space-y-3">
-          {workshops.map((workshop) => {
-            const totalBooked = workshop.bookings.reduce(
-              (sum, b) => sum + b.seatsBooked,
-              0
-            );
-            const seatsLeft = workshop.maxSeats - totalBooked;
-            const isPast = new Date(workshop.dateTime) < new Date();
-            const revenue = workshop.bookings.reduce(
-              (sum, b) => sum + b.seatsBooked * workshop.price,
-              0
-            );
-
-            return (
-              <Link
-                key={workshop.id}
-                href={`/organizer/workshops/${workshop.id}`}
-              >
-                <div className="group flex items-center justify-between rounded-2xl border border-border/50 bg-card px-6 py-5 shadow-sm transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 cursor-pointer mb-1">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <h2 className="text-base font-bold truncate group-hover:text-primary transition-colors">
-                        {workshop.title}
-                      </h2>
-                      {isPast && (
-                        <Badge variant="secondary" className="shrink-0 rounded-full text-xs">
-                          Past
-                        </Badge>
-                      )}
-                    </div>
-                    <p className="mt-1 text-sm text-muted-foreground truncate">
-                      {workshop.artistName || workshop.danceStyle} ·{" "}
-                      {new Date(workshop.dateTime).toLocaleDateString("en-IN", {
-                        weekday: "short",
-                        day: "numeric",
-                        month: "short",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}{" "}
-                      · {workshop.city}
-                    </p>
-                  </div>
-                  <div className="ml-4 flex items-center gap-5 shrink-0">
-                    {[
-                      { value: `${totalBooked}/${workshop.maxSeats}`, label: "Booked" },
-                      { value: seatsLeft, label: "Left" },
-                      { value: `₹${revenue}`, label: "Revenue" },
-                    ].map((stat) => (
-                      <div key={stat.label} className="text-center min-w-[50px]">
-                        <p className="font-bold text-sm">{stat.value}</p>
-                        <p className="text-xs text-muted-foreground">{stat.label}</p>
-                      </div>
-                    ))}
-                    <svg className="h-5 w-5 text-muted-foreground/40 group-hover:text-primary transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
+        <WorkshopTabs upcoming={upcoming} completed={completed} />
       )}
     </div>
   );

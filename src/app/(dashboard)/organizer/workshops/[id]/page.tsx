@@ -71,8 +71,8 @@ export default async function OrganizerWorkshopDetailPage({
         </Link>
       </div>
 
-      <div className="mb-8 rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-800 px-7 py-7 text-white shadow-xl">
-        <div className="flex items-start justify-between">
+      <div className="mb-8 rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-800 px-4 py-5 sm:px-7 sm:py-7 text-white shadow-xl">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-2xl font-extrabold tracking-tight">{workshop.title}</h1>
@@ -113,7 +113,7 @@ export default async function OrganizerWorkshopDetailPage({
           </div>
         </div>
 
-        <div className="mt-6 grid grid-cols-5 gap-3">
+        <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {stats.map((stat) => (
             <div key={stat.label} className="rounded-xl bg-white/5 border border-white/10 px-4 py-3.5 backdrop-blur-sm">
               <p className="text-2xl font-extrabold">{stat.value}</p>

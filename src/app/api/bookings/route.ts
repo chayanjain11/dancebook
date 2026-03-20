@@ -73,22 +73,6 @@ export async function POST(request: Request) {
       );
     }
 
-    const existing = await prisma.booking.findUnique({
-      where: {
-        userId_workshopId: {
-          userId: session.user.id,
-          workshopId,
-        },
-      },
-    });
-
-    if (existing) {
-      return NextResponse.json(
-        { error: "You already booked this workshop" },
-        { status: 409 }
-      );
-    }
-
     const totalAmount = workshop.price * seatsBooked;
 
     const booking = await prisma.booking.create({

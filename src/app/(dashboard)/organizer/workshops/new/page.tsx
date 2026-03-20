@@ -30,6 +30,7 @@ interface WorkshopData {
   dateTime: string;
   city: string;
   venue: string;
+  mapUrl?: string;
   price: number;
   maxSeats: number;
   durationMinutes?: number;
@@ -70,6 +71,7 @@ export default function NewWorkshopPage() {
       dateTime: fd.get("dateTime") as string,
       city: fd.get("city") as string,
       venue: fd.get("venue") as string,
+      mapUrl: (fd.get("mapUrl") as string) || undefined,
       price: Number(fd.get("price")),
       maxSeats: Number(fd.get("maxSeats")),
       durationMinutes: fd.get("durationMinutes") ? Number(fd.get("durationMinutes")) : undefined,
@@ -224,6 +226,11 @@ export default function NewWorkshopPage() {
                   <div className="space-y-2">
                     <Label htmlFor="venue">Venue</Label>
                     <Input id="venue" name="venue" placeholder="e.g., Dance Studio XYZ, Andheri West" defaultValue={formData?.venue} required className="h-11 rounded-lg" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="mapUrl">Google Maps Link (optional)</Label>
+                    <Input id="mapUrl" name="mapUrl" type="url" placeholder="https://maps.google.com/..." defaultValue={formData?.mapUrl} className="h-11 rounded-lg" />
+                    <p className="text-xs text-muted-foreground">Paste the Google Maps link for your venue so attendees can find it easily</p>
                   </div>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">

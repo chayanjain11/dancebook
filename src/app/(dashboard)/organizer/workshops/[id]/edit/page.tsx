@@ -30,6 +30,7 @@ interface Workshop {
   dateTime: string;
   city: string;
   venue: string;
+  mapUrl: string | null;
   price: number;
   maxSeats: number;
   bookedSeats: number;
@@ -78,6 +79,8 @@ export default function EditWorkshopPage() {
       title: formData.get("title") as string,
       danceStyle: formData.get("danceStyle") as string,
       description: formData.get("description") as string,
+      dateTime: formData.get("dateTime") as string,
+      mapUrl: (formData.get("mapUrl") as string) || "",
       price: Number(formData.get("price")),
       maxSeats: Number(formData.get("maxSeats")),
       durationMinutes: formData.get("durationMinutes") ? Number(formData.get("durationMinutes")) : null,
@@ -185,8 +188,8 @@ export default function EditWorkshopPage() {
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label>Date & Time</Label>
-                  <Input value={new Date(workshop.dateTime).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })} disabled className="h-11 rounded-lg bg-muted/50 text-muted-foreground" />
+                  <Label htmlFor="dateTime">Date & Time</Label>
+                  <Input id="dateTime" name="dateTime" type="datetime-local" defaultValue={new Date(workshop.dateTime).toISOString().slice(0, 16)} required className="h-11 rounded-lg" />
                 </div>
                 <div className="space-y-2">
                   <Label>City</Label>
@@ -197,7 +200,16 @@ export default function EditWorkshopPage() {
               <div className="space-y-2">
                 <Label>Venue</Label>
                 <Input value={workshop.venue} disabled className="h-11 rounded-lg bg-muted/50 text-muted-foreground" />
-                <p className="text-xs text-muted-foreground">Date, city, venue and artist cannot be changed after creation</p>
+                <p className="text-xs text-muted-foreground">City and venue cannot be changed after creation</p>
+                {hasBookings && (
+                  <p className="text-xs text-amber-600">Changing date or time will notify all booked attendees via email</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="mapUrl">Google Maps Link (optional)</Label>
+                <Input id="mapUrl" name="mapUrl" type="url" placeholder="https://maps.google.com/..." defaultValue={workshop.mapUrl ?? ""} className="h-11 rounded-lg" />
+                <p className="text-xs text-muted-foreground">Paste the Google Maps link for your venue</p>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">

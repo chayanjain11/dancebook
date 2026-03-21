@@ -29,18 +29,33 @@ export async function sendBulkEmail(
   subject: string,
   html: string
 ) {
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    console.warn("SMTP not configured, skipping bulk email");
+    return { sent: 0, failed: 0, total: 0 };
+  }
+
   const unique = Array.from(
     new Map(recipients.map((r) => [r.email, r])).values()
   );
 
-  const results = await Promise.allSettled(
-    unique.map((r) => sendEmail(r.email, subject, html))
-  );
+  if (unique.length === 0) return { sent: 0, failed: 0, total: 0 };
 
-  const sent = results.filter((r) => r.status === "fulfilled").length;
-  const failed = results.filter((r) => r.status === "rejected").length;
+  // Send a single email with all recipients in BCC (saves SMTP quota)
+  const bccEmails = unique.map((r) => r.email);
 
-  return { sent, failed, total: unique.length };
+  try {
+    await transporter.sendMail({
+      from: process.env.SMTP_FROM || process.env.SMTP_USER,
+      to: process.env.SMTP_FROM || process.env.SMTP_USER,
+      bcc: bccEmails,
+      subject,
+      html,
+    });
+    return { sent: unique.length, failed: 0, total: unique.length };
+  } catch (err) {
+    console.error("Bulk email failed:", err);
+    return { sent: 0, failed: unique.length, total: unique.length };
+  }
 }
 
 function formatDuration(minutes: number): string {

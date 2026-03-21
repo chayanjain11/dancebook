@@ -93,8 +93,13 @@ export async function PUT(
 
     // Detect date/time/venue/city changes for notification
     const changes: string[] = [];
-    if (parsed.data.dateTime && new Date(parsed.data.dateTime).getTime() !== new Date(workshop.dateTime).getTime()) {
-      changes.push(`Date & Time changed to ${new Date(parsed.data.dateTime).toLocaleString("en-IN", { dateStyle: "full", timeStyle: "short" })}`);
+    if (parsed.data.dateTime) {
+      const newDate = new Date(parsed.data.dateTime);
+      const oldDate = new Date(workshop.dateTime);
+      // Only trigger if difference is more than 60 seconds (avoids timezone/serialization noise)
+      if (Math.abs(newDate.getTime() - oldDate.getTime()) > 60000) {
+        changes.push(`Date & Time changed to ${newDate.toLocaleString("en-IN", { dateStyle: "full", timeStyle: "short" })}`);
+      }
     }
     if (parsed.data.venue && parsed.data.venue !== workshop.venue) {
       changes.push(`Venue changed to ${parsed.data.venue}`);

@@ -189,7 +189,11 @@ export default function EditWorkshopPage() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="dateTime">Date & Time</Label>
-                  <Input id="dateTime" name="dateTime" type="datetime-local" defaultValue={new Date(workshop.dateTime).toISOString().slice(0, 16)} required className="h-11 rounded-lg" />
+                  <Input id="dateTime" name="dateTime" type="datetime-local" defaultValue={(() => {
+                    const d = new Date(workshop.dateTime);
+                    const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+                    return local.toISOString().slice(0, 16);
+                  })()} required className="h-11 rounded-lg" />
                 </div>
                 <div className="space-y-2">
                   <Label>City</Label>

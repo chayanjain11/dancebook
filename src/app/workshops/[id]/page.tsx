@@ -19,7 +19,7 @@ export default async function WorkshopDetailPage({
       organizer: { select: { name: true } },
       bookings: {
         where: { status: "CONFIRMED" },
-        select: { seatsBooked: true, userId: true },
+        select: { id: true, seatsBooked: true, userId: true },
       },
     },
   });
@@ -33,7 +33,10 @@ export default async function WorkshopDetailPage({
   );
   const seatsLeft = workshop.maxSeats - bookedSeats;
 
-  const alreadyBooked = false;
+  const userBooking = session?.user
+    ? workshop.bookings.find((b) => b.userId === session.user.id)
+    : null;
+  const alreadyBooked = !!userBooking;
 
   return (
     <div className="mx-auto max-w-2xl">
@@ -159,6 +162,7 @@ export default async function WorkshopDetailPage({
         isLoggedIn={!!session?.user}
         isOrganizer={session?.user?.role === "ORGANIZER"}
         alreadyBooked={alreadyBooked}
+        existingBookingId={userBooking?.id}
         isPast={new Date(workshop.dateTime) < new Date()}
       />
     </div>

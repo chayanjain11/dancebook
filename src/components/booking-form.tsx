@@ -23,6 +23,7 @@ interface BookingFormProps {
   isLoggedIn: boolean;
   isOrganizer: boolean;
   alreadyBooked: boolean;
+  existingBookingId?: string;
   isPast: boolean;
 }
 
@@ -57,6 +58,7 @@ export function BookingForm({
   isLoggedIn,
   isOrganizer,
   alreadyBooked,
+  existingBookingId,
   isPast,
 }: BookingFormProps) {
   const router = useRouter();
@@ -67,6 +69,8 @@ export function BookingForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [bookingId, setBookingId] = useState(existingBookingId || "");
+  const [showBookMore, setShowBookMore] = useState(alreadyBooked);
 
   if (isPast) {
     return (
@@ -96,11 +100,22 @@ export function BookingForm({
     );
   }
 
-  if (alreadyBooked) {
+  if (showBookMore && seatsLeft > 0) {
     return (
-      <Button size="lg" disabled className="rounded-full px-8">
-        Already Booked
-      </Button>
+      <div className="space-y-3 text-center">
+        <Link href={`/customer/bookings/${bookingId}`}>
+          <Button size="lg" variant="outline" className="rounded-full px-8 w-full">
+            View My Ticket
+          </Button>
+        </Link>
+        <Button
+          size="lg"
+          className="rounded-full px-8 w-full shadow-md shadow-primary/20"
+          onClick={() => setShowBookMore(false)}
+        >
+          Book More Seats
+        </Button>
+      </div>
     );
   }
 
@@ -131,9 +146,9 @@ export function BookingForm({
             <p className="mt-2 text-muted-foreground">
               {seats} seat(s) booked. Total: {pricePerSeat * seats === 0 ? "Free" : `₹${pricePerSeat * seats}`}
             </p>
-            <Link href="/customer/bookings">
+            <Link href={bookingId ? `/customer/bookings/${bookingId}` : "/customer/bookings"}>
               <Button className="mt-6 rounded-full px-8" variant="outline">
-                View My Bookings & Tickets
+                View My Ticket
               </Button>
             </Link>
           </CardContent>
@@ -201,6 +216,7 @@ export function BookingForm({
       if (!res.ok) {
         setError(data.error || "Booking failed");
       } else {
+        if (data.id) setBookingId(data.id);
         setSuccess(true);
         router.refresh();
       }
@@ -261,6 +277,7 @@ export function BookingForm({
             if (!ok) {
               setError(data.details || data.error || "Payment verification failed");
             } else {
+              if (data.id) setBookingId(data.id);
               setSuccess(true);
               router.refresh();
             }
@@ -493,11 +510,19 @@ export function BookingForm({
             onClick={handleBook}
             disabled={loading}
           >
-            {loading
-              ? "Processing..."
-              : totalAmount === 0
-              ? "Confirm Booking"
-              : `Pay ₹${totalAmount}`}
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                Processing...
+              </span>
+            ) : totalAmount === 0 ? (
+              "Confirm Booking"
+            ) : (
+              `Pay ₹${totalAmount}`
+            )}
           </Button>
         )}
       </CardFooter>

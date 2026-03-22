@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useOverlayLoading } from "@/components/loading-overlay";
 
 interface TicketInfo {
   guestName: string;
@@ -35,7 +36,7 @@ interface ScanResult {
 export default function ScanPage() {
   const [manualToken, setManualToken] = useState("");
   const [scanning, setScanning] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useOverlayLoading();
   const [result, setResult] = useState<ScanResult | null>(null);
   const scannerRef = useRef<HTMLDivElement>(null);
   const html5QrScannerRef = useRef<unknown>(null);

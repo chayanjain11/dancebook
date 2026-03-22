@@ -14,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useOverlayLoading } from "@/components/loading-overlay";
 
 const DANCE_STYLES = [
   "Salsa", "Hip-Hop", "Bollywood", "Contemporary", "Ballet",
@@ -43,7 +44,7 @@ export default function EditWorkshopPage() {
   const params = useParams();
   const [workshop, setWorkshop] = useState<Workshop | null>(null);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useOverlayLoading();
   const [imageUrl, setImageUrl] = useState("");
   const [uploading, setUploading] = useState(false);
 

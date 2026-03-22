@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useOverlayLoading } from "@/components/loading-overlay";
 
 interface BookingButtonProps {
   workshopId: string;
@@ -23,7 +24,7 @@ export function BookingButton({
   isPast,
 }: BookingButtonProps) {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useOverlayLoading();
   const [error, setError] = useState("");
 
   if (isPast) {

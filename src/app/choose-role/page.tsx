@@ -12,12 +12,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useOverlayLoading } from "@/components/loading-overlay";
 
 export default function ChooseRolePage() {
   const router = useRouter();
   const [role, setRole] = useState<"CUSTOMER" | "ORGANIZER" | null>(null);
   const [phone, setPhone] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useOverlayLoading();
   const [error, setError] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {

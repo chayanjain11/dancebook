@@ -16,11 +16,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { MotionDiv, fadeInUp, staggerContainer, fadeIn } from "@/components/motion";
+import { useOverlayLoading } from "@/components/loading-overlay";
 
 export default function LoginPage() {
   const router = useRouter();
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useOverlayLoading();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();

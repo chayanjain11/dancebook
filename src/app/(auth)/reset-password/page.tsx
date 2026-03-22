@@ -15,6 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { MotionDiv, fadeInUp, staggerContainer, fadeIn } from "@/components/motion";
+import { useOverlayLoading } from "@/components/loading-overlay";
 
 export default function ResetPasswordPage() {
   return (
@@ -29,7 +30,7 @@ function ResetPasswordContent() {
   const token = searchParams.get("token");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useOverlayLoading();
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
 

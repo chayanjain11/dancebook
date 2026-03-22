@@ -14,10 +14,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { MotionDiv, fadeInUp, staggerContainer, fadeIn } from "@/components/motion";
+import { useOverlayLoading } from "@/components/loading-overlay";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useOverlayLoading();
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
 

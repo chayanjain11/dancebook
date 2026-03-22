@@ -15,6 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useOverlayLoading } from "@/components/loading-overlay";
 
 interface BookingFormProps {
   workshopId: string;
@@ -66,7 +67,7 @@ export function BookingForm({
   const [guests, setGuests] = useState<Guest[]>([{ name: "", phone: "", whatsapp: "" }]);
   const [step, setStep] = useState<"select" | "details" | "payment">("select");
   const [direction, setDirection] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useOverlayLoading();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [bookingId, setBookingId] = useState(existingBookingId || "");

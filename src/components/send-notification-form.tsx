@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useOverlayLoading } from "@/components/loading-overlay";
 
 interface SendNotificationFormProps {
   workshopId: string;
@@ -16,7 +17,7 @@ export function SendNotificationForm({ workshopId, hasBookings }: SendNotificati
   const [type, setType] = useState<"ANNOUNCEMENT" | "DELAY" | "CANCELLATION">("ANNOUNCEMENT");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useOverlayLoading();
   const [result, setResult] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   async function handleSend() {

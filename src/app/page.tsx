@@ -27,8 +27,8 @@ export default function HomePage() {
       {/* Decorative background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-primary/5 animate-float-slow" />
-        <div className="absolute top-1/3 -left-20 h-60 w-60 rounded-full bg-pink-500/5 animate-float-rotate" />
-        <div className="absolute bottom-1/4 right-1/4 h-40 w-40 rounded-full bg-orange-500/5 animate-float" />
+        <div className="absolute top-1/3 -left-20 h-60 w-60 rounded-full bg-cyan-500/5 animate-float-rotate" />
+        <div className="absolute bottom-1/4 right-1/4 h-40 w-40 rounded-full bg-blue-500/5 animate-float" />
       </div>
 
       {/* Hero Section */}
@@ -132,10 +132,10 @@ export default function HomePage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
                   {/* Color tint overlay on hover */}
                   <div className={`absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity duration-500 ${
-                    i === 0 ? "bg-orange-500" :
-                    i === 1 ? "bg-purple-500" :
-                    i === 2 ? "bg-pink-500" :
-                    "bg-blue-500"
+                    i === 0 ? "bg-cyan-500" :
+                    i === 1 ? "bg-blue-500" :
+                    i === 2 ? "bg-indigo-500" :
+                    "bg-sky-500"
                   }`} />
                   {/* Label */}
                   <motion.div
@@ -244,7 +244,7 @@ export default function HomePage() {
             fill
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-900/90 via-purple-800/85 to-pink-900/90 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-gradient-to-r from-cyan-900/90 via-blue-900/85 to-indigo-900/90 backdrop-blur-sm" />
         </div>
         <div className="relative z-10 px-8 py-16 text-center">
           <motion.h2
@@ -272,12 +272,12 @@ export default function HomePage() {
             className="flex gap-3 justify-center"
           >
             <Link href="/workshops">
-              <Button size="lg" className="rounded-full px-8 h-12 text-base bg-white text-purple-900 hover:bg-white/90 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-0.5">
+              <Button size="lg" className="rounded-full px-8 h-12 text-base bg-white text-blue-900 hover:bg-white/90 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-0.5">
                 Explore Now
               </Button>
             </Link>
             <Link href="/signup">
-              <Button size="lg" variant="outline" className="rounded-full px-8 h-12 text-base border-white/30 text-white hover:bg-white/10 transition-all hover:-translate-y-0.5">
+              <Button size="lg" className="rounded-full px-8 h-12 text-base bg-white text-blue-900 hover:bg-white/90 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-0.5">
                 Sign Up Free
               </Button>
             </Link>

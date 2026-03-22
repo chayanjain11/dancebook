@@ -38,7 +38,7 @@ export async function POST(request: Request) {
       <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 20px;">
         <div style="text-align: center; margin-bottom: 24px;">
           <span style="font-size: 20px; font-weight: 800; letter-spacing: -0.5px;">
-            <span style="color: #7c3aed;">Book</span>Your<span style="color: #7c3aed;">Dance</span>
+            <span style="color: #1a8fb5;">Book</span>Your<span style="color: #1a8fb5;">Dance</span>
           </span>
         </div>
         <div style="background: #f9fafb; border-radius: 16px; padding: 28px; text-align: center;">
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
           <p style="margin: 0 0 24px; font-size: 14px; color: #666; line-height: 1.6;">
             We received a request to reset your password. Click the button below to set a new one. This link expires in 1 hour.
           </p>
-          <a href="${resetUrl}" style="display: inline-block; background: #7c3aed; color: white; font-size: 14px; font-weight: 600; padding: 12px 32px; border-radius: 99px; text-decoration: none;">
+          <a href="${resetUrl}" style="display: inline-block; background: #1a8fb5; color: white; font-size: 14px; font-weight: 600; padding: 12px 32px; border-radius: 99px; text-decoration: none;">
             Reset Password
           </a>
         </div>

@@ -75,15 +75,15 @@ export function notificationEmailHtml(
   const typeColors: Record<string, string> = {
     CANCELLATION: "#dc2626",
     DELAY: "#f59e0b",
-    ANNOUNCEMENT: "#7c3aed",
+    ANNOUNCEMENT: "#1a8fb5",
   };
-  const color = typeColors[type] || "#7c3aed";
+  const color = typeColors[type] || "#1a8fb5";
 
   return `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 20px;">
       <div style="text-align: center; margin-bottom: 24px;">
         <span style="font-size: 20px; font-weight: 800; letter-spacing: -0.5px;">
-          <span style="color: #7c3aed;">Book</span>Your<span style="color: #7c3aed;">Dance</span>
+          <span style="color: #1a8fb5;">Book</span>Your<span style="color: #1a8fb5;">Dance</span>
         </span>
       </div>
       <div style="background: ${color}15; border: 1px solid ${color}30; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
@@ -118,10 +118,10 @@ export function reminderEmailHtml(
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 20px;">
       <div style="text-align: center; margin-bottom: 24px;">
         <span style="font-size: 20px; font-weight: 800; letter-spacing: -0.5px;">
-          <span style="color: #7c3aed;">Book</span>Your<span style="color: #7c3aed;">Dance</span>
+          <span style="color: #1a8fb5;">Book</span>Your<span style="color: #1a8fb5;">Dance</span>
         </span>
       </div>
-      <div style="background: linear-gradient(135deg, #7c3aed15, #ec489915); border: 1px solid #7c3aed25; border-radius: 16px; padding: 28px; text-align: center;">
+      <div style="background: linear-gradient(135deg, #1a8fb515, #d4a01715); border: 1px solid #1a8fb525; border-radius: 16px; padding: 28px; text-align: center;">
         <p style="font-size: 28px; margin: 0 0 8px;">Your workshop starts in 1 hour!</p>
         <h2 style="margin: 0 0 20px; font-size: 22px; font-weight: 800; color: #111;">${workshopTitle}</h2>
         <div style="background: white; border-radius: 12px; padding: 16px; text-align: left; font-size: 14px;">

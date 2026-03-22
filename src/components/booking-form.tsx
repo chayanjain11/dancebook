@@ -293,7 +293,7 @@ export function BookingForm({
         },
       },
       theme: {
-        color: "#7c3aed",
+        color: "#1a8fb5",
       },
     };
 

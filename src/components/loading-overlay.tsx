@@ -43,12 +43,7 @@ export function LoadingOverlayProvider({ children }: { children: React.ReactNode
     <LoadingContext.Provider value={{ isLoading: count > 0, startLoading, stopLoading }}>
       {children}
       {count > 0 && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/20 backdrop-blur-[2px]">
-          <div className="flex flex-col items-center gap-3 rounded-2xl bg-card/95 px-8 py-6 shadow-2xl border border-border/50">
-            <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-muted border-t-primary" />
-            <p className="text-sm font-medium text-muted-foreground">Please wait...</p>
-          </div>
-        </div>
+        <div className="fixed inset-0 z-[100] bg-black/15 cursor-wait" />
       )}
     </LoadingContext.Provider>
   );

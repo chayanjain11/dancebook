@@ -45,9 +45,9 @@ export default function NewWorkshopPage() {
   const [loading, setLoading] = useOverlayLoading();
   const [imageUrl, setImageUrl] = useState("");
   const [uploading, setUploading] = useState(false);
-  const [selectedStyle, setSelectedStyle] = useState(formData?.danceStyle || "");
   const [step, setStep] = useState<"form" | "preview">("form");
   const [formData, setFormData] = useState<WorkshopData | null>(null);
+  const [selectedStyle, setSelectedStyle] = useState("");
 
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];

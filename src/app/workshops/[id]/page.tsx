@@ -87,7 +87,7 @@ export default async function WorkshopDetailPage({
           },
           {
             label: "Location",
-            value: `${workshop.venue}, ${workshop.city}`,
+            value: `${workshop.studioName}, ${workshop.studioAddress}`,
           },
           {
             label: "Price",
@@ -142,7 +142,7 @@ export default async function WorkshopDetailPage({
                 <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
               </svg>
               <div className="min-w-0 flex-1">
-                <p className="font-semibold text-sm">{workshop.venue}, {workshop.city}</p>
+                <p className="font-semibold text-sm">{workshop.studioName}, {workshop.studioAddress}</p>
                 <p className="text-xs text-primary">Open in Google Maps</p>
               </div>
               <svg className="h-4 w-4 text-muted-foreground shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

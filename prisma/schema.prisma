@@ -42,7 +42,8 @@ model Workshop {
   imageUrl        String?
   dateTime        DateTime
   city            String
-  venue           String
+  studioName      String
+  studioAddress   String
   mapUrl          String?
   price           Int
   maxSeats        Int

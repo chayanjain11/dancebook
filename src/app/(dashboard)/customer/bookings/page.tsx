@@ -93,7 +93,7 @@ export default async function CustomerBookingsPage() {
                         minute: "2-digit",
                       })}
                     </p>
-                    <p>{booking.workshop.venue}, {booking.workshop.city}</p>
+                    <p>{booking.workshop.studioName}, {booking.workshop.studioAddress}</p>
                   </div>
                   <div className="mt-3 flex items-center justify-between">
                     <div className="flex items-center gap-3">

@@ -30,7 +30,8 @@ interface Workshop {
   imageUrl: string | null;
   dateTime: string;
   city: string;
-  venue: string;
+  studioName: string;
+  studioAddress: string;
   mapUrl: string | null;
   price: number;
   maxSeats: number;
@@ -45,6 +46,7 @@ export default function EditWorkshopPage() {
   const [workshop, setWorkshop] = useState<Workshop | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useOverlayLoading();
+  const [selectedStyle, setSelectedStyle] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [uploading, setUploading] = useState(false);
 
@@ -54,6 +56,7 @@ export default function EditWorkshopPage() {
       .then((data) => {
         setWorkshop(data);
         if (data.imageUrl) setImageUrl(data.imageUrl);
+        setSelectedStyle(DANCE_STYLES.includes(data.danceStyle) ? data.danceStyle : "Other");
       })
       .catch(() => setError("Failed to load workshop"));
   }, [params.id]);
@@ -76,9 +79,19 @@ export default function EditWorkshopPage() {
     setError("");
     setLoading(true);
     const formData = new FormData(e.currentTarget);
+    const styleVal = formData.get("danceStyle") as string;
+    const customStyle = formData.get("customDanceStyle") as string;
+    const danceStyle = styleVal === "Other" ? customStyle : styleVal;
+
+    if (styleVal === "Other" && (!customStyle || customStyle.length < 2)) {
+      setError("Please enter a custom dance style name");
+      setLoading(false);
+      return;
+    }
+
     const body = {
       title: formData.get("title") as string,
-      danceStyle: formData.get("danceStyle") as string,
+      danceStyle,
       description: formData.get("description") as string,
       dateTime: formData.get("dateTime") as string,
       mapUrl: (formData.get("mapUrl") as string) || "",
@@ -177,9 +190,26 @@ export default function EditWorkshopPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="danceStyle">Dance Style</Label>
-                <select id="danceStyle" name="danceStyle" defaultValue={workshop.danceStyle} className={selectClass} required>
+                <select
+                  id="danceStyle"
+                  name="danceStyle"
+                  defaultValue={DANCE_STYLES.includes(workshop.danceStyle) ? workshop.danceStyle : "Other"}
+                  className={selectClass}
+                  required
+                  onChange={(e) => setSelectedStyle(e.target.value)}
+                >
                   {DANCE_STYLES.map((style) => <option key={style} value={style}>{style}</option>)}
                 </select>
+                {selectedStyle === "Other" && (
+                  <Input
+                    name="customDanceStyle"
+                    placeholder="Enter your dance style"
+                    defaultValue={!DANCE_STYLES.includes(workshop.danceStyle) ? workshop.danceStyle : ""}
+                    required
+                    minLength={2}
+                    className="h-11 rounded-lg mt-2"
+                  />
+                )}
               </div>
 
               <div className="space-y-2">
@@ -203,9 +233,13 @@ export default function EditWorkshopPage() {
               </div>
 
               <div className="space-y-2">
-                <Label>Venue</Label>
-                <Input value={workshop.venue} disabled className="h-11 rounded-lg bg-muted/50 text-muted-foreground" />
-                <p className="text-xs text-muted-foreground">City and venue cannot be changed after creation</p>
+                <Label>Studio Name</Label>
+                <Input value={workshop.studioName} disabled className="h-11 rounded-lg bg-muted/50 text-muted-foreground" />
+              </div>
+              <div className="space-y-2">
+                <Label>Studio Address</Label>
+                <Input value={workshop.studioAddress} disabled className="h-11 rounded-lg bg-muted/50 text-muted-foreground" />
+                <p className="text-xs text-muted-foreground">City, studio name and address cannot be changed after creation</p>
                 {hasBookings && (
                   <p className="text-xs text-amber-600">Changing date or time will notify all booked attendees via email</p>
                 )}
@@ -214,7 +248,7 @@ export default function EditWorkshopPage() {
               <div className="space-y-2">
                 <Label htmlFor="mapUrl">Google Maps Link (optional)</Label>
                 <Input id="mapUrl" name="mapUrl" type="url" placeholder="https://maps.google.com/..." defaultValue={workshop.mapUrl ?? ""} className="h-11 rounded-lg" />
-                <p className="text-xs text-muted-foreground">Paste the Google Maps link for your venue</p>
+                <p className="text-xs text-muted-foreground">Paste the Google Maps link for your studio</p>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">

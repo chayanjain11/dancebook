@@ -22,7 +22,8 @@ interface TicketInfo {
   workshop?: {
     title: string;
     dateTime: string;
-    venue: string;
+    studioName: string;
+    studioAddress: string;
     city: string;
   };
 }
@@ -308,26 +309,13 @@ export default function ScanPage() {
                         result.ticket.guestPhone ? { label: "Phone", value: result.ticket.guestPhone } : null,
                         result.ticket.bookedBy ? { label: "Booked By", value: result.ticket.bookedBy } : null,
                         result.ticket.workshop ? { label: "Workshop", value: result.ticket.workshop.title, bold: true } : null,
-                        result.ticket.workshop ? { label: "Venue", value: `${result.ticket.workshop.venue}, ${result.ticket.workshop.city}` } : null,
+                        result.ticket.workshop ? { label: "Venue", value: `${result.ticket.workshop.studioName}, ${result.ticket.workshop.studioAddress}` } : null,
                       ].filter(Boolean).map((item) => (
                         <div key={item!.label} className="flex justify-between">
                           <span className="text-muted-foreground">{item!.label}</span>
                           <span className={item!.bold ? "font-semibold" : ""}>{item!.value}</span>
                         </div>
                       ))}
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Status</span>
-                        <Badge
-                          className={
-                            result.ticket.attended
-                              ? "rounded-full bg-green-100 text-green-700 border-green-200"
-                              : "rounded-full"
-                          }
-                          variant={result.ticket.attended ? "default" : "outline"}
-                        >
-                          {result.ticket.attended ? "Attended" : "Pending"}
-                        </Badge>
-                      </div>
                     </div>
                   )}
 

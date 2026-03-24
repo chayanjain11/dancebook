@@ -103,7 +103,7 @@ export function SendNotificationForm({ workshopId, hasBookings }: SendNotificati
                 <Input
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
-                  placeholder="e.g., Venue changed to Hall B"
+                  placeholder="e.g., Important update about your booking"
                   className="h-10 rounded-lg"
                 />
               </div>

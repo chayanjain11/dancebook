@@ -88,7 +88,7 @@ export default async function OrganizerWorkshopDetailPage({
                 hour: "2-digit",
                 minute: "2-digit",
               })}{" "}
-              · {workshop.venue}, {workshop.city}
+              · {workshop.studioName}, {workshop.studioAddress}
               {workshop.durationMinutes && ` · ${Math.floor(workshop.durationMinutes / 60) > 0 ? Math.floor(workshop.durationMinutes / 60) + "h " : ""}${workshop.durationMinutes % 60 > 0 ? (workshop.durationMinutes % 60) + "m" : ""}`}
               {workshop.ageLimit && ` · ${workshop.ageLimit}+ only`}
             </p>

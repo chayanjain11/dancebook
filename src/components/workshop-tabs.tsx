@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { ShareButtons } from "@/components/share-buttons";
 
 interface WorkshopItem {
   id: string;
@@ -11,6 +12,7 @@ interface WorkshopItem {
   danceStyle: string;
   dateTime: string;
   city: string;
+  imageUrl: string | null;
   price: number;
   maxSeats: number;
   totalBooked: number;
@@ -89,17 +91,27 @@ export function WorkshopTabs({ upcoming, completed }: { upcoming: WorkshopItem[]
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
                   </div>
-                  <div className="mt-3 flex gap-4 sm:gap-5">
-                    {[
-                      { value: `${workshop.totalBooked}/${workshop.maxSeats}`, label: "Booked" },
-                      { value: seatsLeft, label: "Left" },
-                      { value: `₹${workshop.revenue}`, label: "Revenue" },
-                    ].map((stat) => (
-                      <div key={stat.label} className="text-center min-w-0">
-                        <p className="font-bold text-sm">{stat.value}</p>
-                        <p className="text-xs text-muted-foreground">{stat.label}</p>
-                      </div>
-                    ))}
+                  <div className="mt-3 flex items-center justify-between">
+                    <div className="flex gap-4 sm:gap-5">
+                      {[
+                        { value: `${workshop.totalBooked}/${workshop.maxSeats}`, label: "Booked" },
+                        { value: seatsLeft, label: "Left" },
+                        { value: `₹${workshop.revenue}`, label: "Revenue" },
+                      ].map((stat) => (
+                        <div key={stat.label} className="text-center min-w-0">
+                          <p className="font-bold text-sm">{stat.value}</p>
+                          <p className="text-xs text-muted-foreground">{stat.label}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <ShareButtons
+                      workshopId={workshop.id}
+                      title={workshop.title}
+                      artistName={workshop.artistName}
+                      dateTime={workshop.dateTime}
+                      city={workshop.city}
+                      imageUrl={workshop.imageUrl}
+                    />
                   </div>
                 </div>
               </Link>

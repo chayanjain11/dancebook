@@ -27,19 +27,21 @@ export async function POST(request: Request) {
       );
     }
 
-    const { imageUrl, ...rest } = parsed.data;
+    const { imageUrl, mapUrl, ...rest } = parsed.data;
 
     const workshop = await prisma.workshop.create({
       data: {
         ...rest,
         imageUrl: imageUrl || null,
+        mapUrl: mapUrl || null,
         dateTime: new Date(rest.dateTime),
         organizerId: session.user.id,
       },
     });
 
     return NextResponse.json(workshop, { status: 201 });
-  } catch {
+  } catch (err) {
+    console.error("Workshop create error:", err);
     return NextResponse.json(
       { error: "Something went wrong" },
       { status: 500 }

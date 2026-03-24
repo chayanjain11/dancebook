@@ -41,8 +41,8 @@ export async function GET(request: Request) {
         const html = reminderEmailHtml(
           workshop.title,
           workshop.dateTime,
-          workshop.venue,
-          workshop.city,
+          workshop.studioName,
+          workshop.studioAddress,
           workshop.durationMinutes
         );
 

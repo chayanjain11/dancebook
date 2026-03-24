@@ -62,7 +62,7 @@ export default async function OrganizerBookingsPage() {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}{" "}
-                    — {workshop.venue}, {workshop.city}
+                    — {workshop.studioName}, {workshop.studioAddress}
                   </p>
                 </CardHeader>
                 <CardContent>

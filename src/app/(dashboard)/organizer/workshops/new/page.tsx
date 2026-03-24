@@ -30,7 +30,8 @@ interface WorkshopData {
   description: string;
   dateTime: string;
   city: string;
-  venue: string;
+  studioName: string;
+  studioAddress: string;
   mapUrl?: string;
   price: number;
   maxSeats: number;
@@ -44,6 +45,7 @@ export default function NewWorkshopPage() {
   const [loading, setLoading] = useOverlayLoading();
   const [imageUrl, setImageUrl] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [selectedStyle, setSelectedStyle] = useState(formData?.danceStyle || "");
   const [step, setStep] = useState<"form" | "preview">("form");
   const [formData, setFormData] = useState<WorkshopData | null>(null);
 
@@ -64,14 +66,24 @@ export default function NewWorkshopPage() {
     e.preventDefault();
     setError("");
     const fd = new FormData(e.currentTarget);
+    const styleVal = fd.get("danceStyle") as string;
+    const customStyle = fd.get("customDanceStyle") as string;
+    const danceStyle = styleVal === "Other" ? customStyle : styleVal;
+
+    if (styleVal === "Other" && (!customStyle || customStyle.length < 2)) {
+      setError("Please enter a custom dance style name");
+      return;
+    }
+
     setFormData({
       title: fd.get("title") as string,
-      danceStyle: fd.get("danceStyle") as string,
+      danceStyle,
       artistName: fd.get("artistName") as string,
       description: fd.get("description") as string,
       dateTime: fd.get("dateTime") as string,
       city: fd.get("city") as string,
-      venue: fd.get("venue") as string,
+      studioName: fd.get("studioName") as string,
+      studioAddress: fd.get("studioAddress") as string,
       mapUrl: (fd.get("mapUrl") as string) || undefined,
       price: Number(fd.get("price")),
       maxSeats: Number(fd.get("maxSeats")),
@@ -137,7 +149,7 @@ export default function NewWorkshopPage() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   {[
                     { label: "Date & Time", value: new Date(formData.dateTime).toLocaleString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" }) },
-                    { label: "Location", value: `${formData.venue}, ${formData.city}` },
+                    { label: "Location", value: `${formData.studioName}, ${formData.studioAddress}` },
                     { label: "Price", value: formData.price === 0 ? "Free" : `₹${formData.price} / seat` },
                     { label: "Max Seats", value: formData.maxSeats },
                     ...(formData.durationMinutes ? [{ label: "Duration", value: `${Math.floor(formData.durationMinutes / 60) > 0 ? Math.floor(formData.durationMinutes / 60) + "h " : ""}${formData.durationMinutes % 60 > 0 ? (formData.durationMinutes % 60) + "m" : ""}`.trim() }] : []),
@@ -205,10 +217,27 @@ export default function NewWorkshopPage() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="danceStyle">Dance Style</Label>
-                    <select id="danceStyle" name="danceStyle" defaultValue={formData?.danceStyle || ""} className={selectClass} required>
+                    <select
+                      id="danceStyle"
+                      name="danceStyle"
+                      defaultValue={formData?.danceStyle && !DANCE_STYLES.includes(formData.danceStyle) ? "Other" : formData?.danceStyle || ""}
+                      className={selectClass}
+                      required
+                      onChange={(e) => setSelectedStyle(e.target.value)}
+                    >
                       <option value="">Select a style</option>
                       {DANCE_STYLES.map((style) => <option key={style} value={style}>{style}</option>)}
                     </select>
+                    {selectedStyle === "Other" && (
+                      <Input
+                        name="customDanceStyle"
+                        placeholder="Enter your dance style"
+                        defaultValue={formData?.danceStyle && !DANCE_STYLES.includes(formData.danceStyle) ? formData.danceStyle : ""}
+                        required
+                        minLength={2}
+                        className="h-11 rounded-lg mt-2"
+                      />
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="description">Description</Label>
@@ -225,13 +254,17 @@ export default function NewWorkshopPage() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="venue">Venue</Label>
-                    <Input id="venue" name="venue" placeholder="e.g., Dance Studio XYZ, Andheri West" defaultValue={formData?.venue} required className="h-11 rounded-lg" />
+                    <Label htmlFor="studioName">Studio Name</Label>
+                    <Input id="studioName" name="studioName" placeholder="e.g., Dance Studio XYZ" defaultValue={formData?.studioName} required className="h-11 rounded-lg" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="studioAddress">Studio Address</Label>
+                    <Input id="studioAddress" name="studioAddress" placeholder="e.g., Andheri West, Mumbai" defaultValue={formData?.studioAddress} required className="h-11 rounded-lg" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="mapUrl">Google Maps Link (optional)</Label>
                     <Input id="mapUrl" name="mapUrl" type="url" placeholder="https://maps.google.com/..." defaultValue={formData?.mapUrl} className="h-11 rounded-lg" />
-                    <p className="text-xs text-muted-foreground">Paste the Google Maps link for your venue so attendees can find it easily</p>
+                    <p className="text-xs text-muted-foreground">Paste the Google Maps link for your studio so attendees can find it easily</p>
                   </div>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">

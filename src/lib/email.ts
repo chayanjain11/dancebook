@@ -102,8 +102,8 @@ export function notificationEmailHtml(
 export function reminderEmailHtml(
   workshopTitle: string,
   dateTime: Date,
-  venue: string,
-  city: string,
+  studioName: string,
+  studioAddress: string,
   durationMinutes?: number | null
 ) {
   const formattedTime = new Date(dateTime).toLocaleString("en-IN", {
@@ -126,7 +126,7 @@ export function reminderEmailHtml(
         <h2 style="margin: 0 0 20px; font-size: 22px; font-weight: 800; color: #111;">${workshopTitle}</h2>
         <div style="background: white; border-radius: 12px; padding: 16px; text-align: left; font-size: 14px;">
           <p style="margin: 0 0 8px;"><strong>Time:</strong> ${formattedTime}</p>
-          <p style="margin: 0 0 8px;"><strong>Venue:</strong> ${venue}, ${city}</p>
+          <p style="margin: 0 0 8px;"><strong>Venue:</strong> ${studioName}, ${studioAddress}</p>
           ${durationMinutes ? `<p style="margin: 0;"><strong>Duration:</strong> ${formatDuration(durationMinutes)}</p>` : ""}
         </div>
       </div>

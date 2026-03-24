@@ -12,7 +12,14 @@ export function RouteLoader() {
   // Detect navigation start by intercepting clicks on links
   useEffect(() => {
     function handleClick(e: MouseEvent) {
-      const anchor = (e.target as HTMLElement).closest("a");
+      // Skip if event was already prevented (e.g. share buttons)
+      if (e.defaultPrevented) return;
+
+      const target = e.target as HTMLElement;
+      // Skip if click originated from a button inside a link
+      if (target.closest("button")) return;
+
+      const anchor = target.closest("a");
       if (!anchor) return;
 
       const href = anchor.getAttribute("href");
@@ -25,8 +32,8 @@ export function RouteLoader() {
       }
     }
 
-    document.addEventListener("click", handleClick, true);
-    return () => document.removeEventListener("click", handleClick, true);
+    document.addEventListener("click", handleClick);
+    return () => document.removeEventListener("click", handleClick);
   }, []);
 
   // Detect navigation end when pathname/search changes

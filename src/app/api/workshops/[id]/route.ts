@@ -91,7 +91,7 @@ export async function PUT(
       );
     }
 
-    // Detect date/time/venue/city changes for notification
+    // Detect date/time/studio/city changes for notification
     const changes: string[] = [];
     if (parsed.data.dateTime) {
       const newDate = new Date(parsed.data.dateTime);
@@ -101,8 +101,11 @@ export async function PUT(
         changes.push(`Date & Time changed to ${newDate.toLocaleString("en-IN", { dateStyle: "full", timeStyle: "short" })}`);
       }
     }
-    if (parsed.data.venue && parsed.data.venue !== workshop.venue) {
-      changes.push(`Venue changed to ${parsed.data.venue}`);
+    if (parsed.data.studioName && parsed.data.studioName !== workshop.studioName) {
+      changes.push(`Studio Name changed to ${parsed.data.studioName}`);
+    }
+    if (parsed.data.studioAddress && parsed.data.studioAddress !== workshop.studioAddress) {
+      changes.push(`Studio Address changed to ${parsed.data.studioAddress}`);
     }
     if (parsed.data.city && parsed.data.city !== workshop.city) {
       changes.push(`City changed to ${parsed.data.city}`);
@@ -119,7 +122,7 @@ export async function PUT(
       },
     });
 
-    // Send email notification if date/time/venue/city changed and there are bookings
+    // Send email notification if date/time/studio/city changed and there are bookings
     if (changes.length > 0 && bookedSeats > 0) {
       const recipients = workshop.bookings.map((b) => ({
         email: b.user.email,

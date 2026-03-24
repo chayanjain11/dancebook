@@ -69,7 +69,7 @@ export default async function BookingDetailPage({
           {booking.workshop.artistName} · {workshopDate}
         </p>
         <p className="text-sm text-muted-foreground">
-          {booking.workshop.venue}, {booking.workshop.city}
+          {booking.workshop.studioName}, {booking.workshop.studioAddress}
         </p>
       </div>
 
@@ -114,7 +114,7 @@ export default async function BookingDetailPage({
             attended={guest.attended}
             workshopTitle={booking.workshop.title}
             workshopDate={workshopDate}
-            venue={`${booking.workshop.venue}, ${booking.workshop.city}`}
+            venue={`${booking.workshop.studioName}, ${booking.workshop.studioAddress}`}
             price={
               booking.workshop.price === 0
                 ? "Free"

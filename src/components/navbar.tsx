@@ -45,12 +45,14 @@ export function Navbar() {
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-1">
-          <Link
-            href="/workshops"
-            className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
-          >
-            Browse
-          </Link>
+          {(!session || session.user?.role !== "ORGANIZER") && (
+            <Link
+              href="/workshops"
+              className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
+            >
+              Browse
+            </Link>
+          )}
 
           {session ? (
             <>
@@ -115,12 +117,14 @@ export function Navbar() {
             className="md:hidden overflow-hidden border-t"
           >
             <nav className="flex flex-col gap-1 p-4">
-              <Link
-                href="/workshops"
-                className="rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent"
-              >
-                Browse Workshops
-              </Link>
+              {(!session || session.user?.role !== "ORGANIZER") && (
+                <Link
+                  href="/workshops"
+                  className="rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent"
+                >
+                  Browse Workshops
+                </Link>
+              )}
 
               {session ? (
                 <>

@@ -43,7 +43,11 @@ export default function LoginPage() {
     if (result?.error) {
       setError("Invalid email or password");
     } else {
-      router.push("/workshops");
+      // Fetch session to determine role-based redirect
+      const sessionRes = await fetch("/api/auth/session");
+      const session = await sessionRes.json();
+      const dest = session?.user?.role === "ORGANIZER" ? "/organizer/workshops" : "/workshops";
+      router.push(dest);
       router.refresh();
     }
   }
@@ -76,7 +80,7 @@ export default function LoginPage() {
                 type="button"
                 variant="outline"
                 className="w-full h-11 rounded-lg text-sm font-medium gap-3 hover:bg-accent transition-colors"
-                onClick={() => signIn("google", { callbackUrl: "/workshops" })}
+                onClick={() => signIn("google", { callbackUrl: "/api/auth/redirect" })}
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24">
                   <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />

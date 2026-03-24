@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "postinstall": "prisma generate",
-    "build": "prisma migrate resolve --applied 20260306132129_init && prisma migrate resolve --applied 20260306184318_add_image_artist_guests_payment && prisma migrate resolve --applied 20260320180000_catchup_oauth_razorpay_mapurl_reset && prisma migrate deploy && next build",
+    "build": "prisma migrate resolve --applied 20260306132129_init && prisma migrate resolve --applied 20260306184318_add_image_artist_guests_payment && prisma migrate resolve --applied 20260320180000_catchup_oauth_razorpay_mapurl_reset && prisma migrate resolve --applied 20260324000000_rename_venue_to_studio && next build",
     "start": "next start",
     "lint": "eslint"
   },

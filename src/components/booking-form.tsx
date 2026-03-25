@@ -419,8 +419,11 @@ export function BookingForm({
                         <Label htmlFor={`guest-phone-${i}`}>Phone</Label>
                         <Input
                           id={`guest-phone-${i}`}
+                          type="tel"
+                          inputMode="numeric"
+                          maxLength={10}
                           value={guest.phone}
-                          onChange={(e) => updateGuest(i, "phone", e.target.value)}
+                          onChange={(e) => updateGuest(i, "phone", e.target.value.replace(/\D/g, "").slice(0, 10))}
                           placeholder="9876543210"
                           required
                           className="h-11 rounded-lg"
@@ -431,8 +434,11 @@ export function BookingForm({
                       <Label htmlFor={`guest-whatsapp-${i}`}>WhatsApp Number (optional)</Label>
                       <Input
                         id={`guest-whatsapp-${i}`}
+                        type="tel"
+                        inputMode="numeric"
+                        maxLength={10}
                         value={guest.whatsapp}
-                        onChange={(e) => updateGuest(i, "whatsapp", e.target.value)}
+                        onChange={(e) => updateGuest(i, "whatsapp", e.target.value.replace(/\D/g, "").slice(0, 10))}
                         placeholder="WhatsApp number for updates"
                         className="h-11 rounded-lg"
                       />
@@ -492,7 +498,7 @@ export function BookingForm({
             className="w-full rounded-full h-11 shadow-md shadow-primary/20"
             onClick={() => {
               const allFilled = guests.every(
-                (g) => g.name.length >= 2 && g.phone.length >= 10
+                (g) => g.name.length >= 2 && /^\d{10}$/.test(g.phone)
               );
               if (!allFilled) {
                 setError("Please fill in all attendee details (name min 2 chars, phone min 10 digits)");

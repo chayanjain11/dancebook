@@ -134,7 +134,7 @@ export default function SignUpPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone Number</Label>
-                  <Input id="phone" name="phone" type="tel" placeholder="9876543210" required minLength={10} className="h-11 rounded-lg" />
+                  <Input id="phone" name="phone" type="tel" inputMode="numeric" pattern="\d{10}" maxLength={10} placeholder="9876543210" required onInput={(e) => { e.currentTarget.value = e.currentTarget.value.replace(/\D/g, "").slice(0, 10); }} className="h-11 rounded-lg" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password">Password</Label>

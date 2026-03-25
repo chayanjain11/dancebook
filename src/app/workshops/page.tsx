@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { WorkshopGrid } from "@/components/workshop-grid";
+import { DateFilter } from "@/components/date-filter";
 
 interface SearchParams {
   city?: string;
@@ -93,12 +94,7 @@ export default async function WorkshopsPage({
           ))}
         </select>
 
-        <input
-          type="date"
-          name="date"
-          defaultValue={params.date || ""}
-          className="rounded-full border border-input bg-card px-4 py-2.5 text-sm shadow-sm transition-colors focus:ring-2 focus:ring-primary/20 focus:border-primary"
-        />
+        <DateFilter defaultValue={params.date || ""} />
 
         <button
           type="submit"

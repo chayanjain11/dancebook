@@ -1,5 +1,6 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Badge } from "@/components/ui/badge";
@@ -54,6 +55,18 @@ export default async function BookingDetailPage({
           Back to My Bookings
         </Link>
       </div>
+
+      {booking.workshop.imageUrl && (
+        <div className="relative mb-6 h-56 w-full overflow-hidden rounded-2xl shadow-lg">
+          <Image
+            src={booking.workshop.imageUrl}
+            alt={booking.workshop.title}
+            fill
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+        </div>
+      )}
 
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-1">

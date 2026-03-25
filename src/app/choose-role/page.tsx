@@ -142,11 +142,13 @@ export default function ChooseRolePage() {
                 <Input
                   id="phone"
                   type="tel"
+                  inputMode="numeric"
+                  pattern="\d{10}"
+                  maxLength={10}
                   placeholder="Enter your phone number"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
                   required
-                  minLength={10}
                   className="h-11 rounded-lg"
                 />
               </div>

@@ -4,7 +4,7 @@ export const signUpSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  phone: z.string().min(10, "Phone number must be at least 10 digits"),
+  phone: z.string().regex(/^\d{10}$/, "Phone must be exactly 10 digits"),
   role: z.enum(["CUSTOMER", "ORGANIZER"]),
 });
 
@@ -48,8 +48,8 @@ export const workshopUpdateSchema = z.object({
 
 const guestSchema = z.object({
   name: z.string().min(2, "Guest name is required"),
-  phone: z.string().min(10, "Guest phone is required"),
-  whatsapp: z.string().min(10).optional().or(z.literal("")),
+  phone: z.string().regex(/^\d{10}$/, "Phone must be exactly 10 digits"),
+  whatsapp: z.string().regex(/^\d{10}$/, "WhatsApp must be exactly 10 digits").optional().or(z.literal("")),
 });
 
 export const bookingSchema = z.object({

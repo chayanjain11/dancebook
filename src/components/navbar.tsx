@@ -25,10 +25,27 @@ export function Navbar() {
     setMenuOpen(false);
   }, [pathname]);
 
-  const dashboardPath =
-    session?.user?.role === "ORGANIZER"
-      ? "/organizer/workshops"
-      : "/customer/bookings";
+  const isOrganizer = session?.user?.role === "ORGANIZER";
+  const dashboardPath = isOrganizer ? "/organizer/workshops" : "/customer/bookings";
+  const dashboardLabel = isOrganizer ? "Dashboard" : "My Bookings";
+
+  function navClass(href: string) {
+    const active = pathname === href || pathname.startsWith(href + "/");
+    return `rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+      active
+        ? "bg-primary/10 text-primary"
+        : "text-muted-foreground hover:text-foreground hover:bg-accent"
+    }`;
+  }
+
+  function mobileNavClass(href: string) {
+    const active = pathname === href || pathname.startsWith(href + "/");
+    return `rounded-lg px-4 py-3 text-sm font-medium transition-colors ${
+      active
+        ? "bg-primary/10 text-primary"
+        : "text-muted-foreground hover:text-foreground hover:bg-accent"
+    }`;
+  }
 
   return (
     <motion.header
@@ -45,28 +62,19 @@ export function Navbar() {
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-1">
-          {(!session || session.user?.role !== "ORGANIZER") && (
-            <Link
-              href="/workshops"
-              className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
-            >
+          {(!session || !isOrganizer) && (
+            <Link href="/workshops" className={navClass("/workshops")}>
               Browse
             </Link>
           )}
 
           {session ? (
             <>
-              <Link
-                href={dashboardPath}
-                className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
-              >
-                Dashboard
+              <Link href={dashboardPath} className={navClass(dashboardPath)}>
+                {dashboardLabel}
               </Link>
-              {session.user?.role === "ORGANIZER" && (
-                <Link
-                  href="/organizer/scan"
-                  className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
-                >
+              {isOrganizer && (
+                <Link href="/organizer/scan" className={navClass("/organizer/scan")}>
                   Scan QR
                 </Link>
               )}
@@ -117,28 +125,19 @@ export function Navbar() {
             className="md:hidden overflow-hidden border-t"
           >
             <nav className="flex flex-col gap-1 p-4">
-              {(!session || session.user?.role !== "ORGANIZER") && (
-                <Link
-                  href="/workshops"
-                  className="rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent"
-                >
+              {(!session || !isOrganizer) && (
+                <Link href="/workshops" className={mobileNavClass("/workshops")}>
                   Browse Workshops
                 </Link>
               )}
 
               {session ? (
                 <>
-                  <Link
-                    href={dashboardPath}
-                    className="rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent"
-                  >
-                    Dashboard
+                  <Link href={dashboardPath} className={mobileNavClass(dashboardPath)}>
+                    {dashboardLabel}
                   </Link>
-                  {session.user?.role === "ORGANIZER" && (
-                    <Link
-                      href="/organizer/scan"
-                      className="rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent"
-                    >
+                  {isOrganizer && (
+                    <Link href="/organizer/scan" className={mobileNavClass("/organizer/scan")}>
                       Scan QR
                     </Link>
                   )}

@@ -13,7 +13,6 @@ interface ShareButtonsProps {
 
 export function ShareButtons({ workshopId, title, artistName, dateTime, city, imageUrl }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
-  const [instaCopied, setInstaCopied] = useState(false);
 
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
   const workshopUrl = `${baseUrl}/workshops/${workshopId}`;
@@ -26,24 +25,13 @@ export function ShareButtons({ workshopId, title, artistName, dateTime, city, im
     minute: "2-digit",
   });
 
-  const shareText =
+  const whatsappText = encodeURIComponent(
     `🎶 *${title}*\n` +
     `🎤 ${artistName}\n` +
     `📅 ${formattedDate}\n` +
     `📍 ${city}\n\n` +
-    `Register now 👇\n${workshopUrl}`;
-
-  async function fetchImageFile(): Promise<File | null> {
-    if (!imageUrl) return null;
-    try {
-      const res = await fetch(imageUrl);
-      const blob = await res.blob();
-      const ext = imageUrl.split(".").pop()?.split("?")[0] || "jpg";
-      return new File([blob], `workshop.${ext}`, { type: blob.type });
-    } catch {
-      return null;
-    }
-  }
+    `Register now 👇\n${workshopUrl}`
+  );
 
   async function handleCopy(e: React.MouseEvent) {
     e.preventDefault();
@@ -53,36 +41,23 @@ export function ShareButtons({ workshopId, title, artistName, dateTime, city, im
     setTimeout(() => setCopied(false), 2000);
   }
 
-  async function handleWhatsApp(e: React.MouseEvent) {
+  function handleWhatsApp(e: React.MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
-
-    // Always open WhatsApp with text + link (image can't be sent via wa.me URL)
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
-    window.open(whatsappUrl, "_blank");
+    window.open(`https://api.whatsapp.com/send?text=${whatsappText}`, "_blank");
   }
 
-  async function handleInstagram(e: React.MouseEvent) {
+  function handleInstagram(e: React.MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
 
-    // Copy caption with link to clipboard, then download poster
-    const caption = `🎶 ${title}\n🎤 ${artistName}\n📅 ${formattedDate}\n📍 ${city}\n\nRegister now 👉 ${workshopUrl}\n\n#dance #workshop #bookyourdance`;
-    await navigator.clipboard.writeText(caption);
-
     if (imageUrl) {
-      // Download poster so user can upload to Instagram story
-      const link = document.createElement("a");
-      link.href = imageUrl;
-      link.download = `${title.replace(/\s+/g, "-").toLowerCase()}-poster.jpg`;
-      link.target = "_blank";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      // Open Instagram story with poster as background image
+      const instaUrl = `instagram://story-camera`;
+      window.location.href = instaUrl;
+    } else {
+      window.open("https://www.instagram.com/", "_blank");
     }
-
-    setInstaCopied(true);
-    setTimeout(() => setInstaCopied(false), 3000);
   }
 
   return (
@@ -107,18 +82,12 @@ export function ShareButtons({ workshopId, title, artistName, dateTime, city, im
       {/* Instagram */}
       <button
         onClick={handleInstagram}
-        className="relative flex h-8 w-8 items-center justify-center rounded-full bg-muted/80 text-muted-foreground hover:bg-gradient-to-tr hover:from-yellow-400 hover:via-pink-500 hover:to-purple-600 hover:text-white transition-all"
-        title={instaCopied ? "Poster downloaded & caption copied!" : "Share on Instagram"}
+        className="flex h-8 w-8 items-center justify-center rounded-full bg-muted/80 text-muted-foreground hover:bg-gradient-to-tr hover:from-yellow-400 hover:via-pink-500 hover:to-purple-600 hover:text-white transition-all"
+        title="Share to Instagram Story"
       >
-        {instaCopied ? (
-          <svg className="h-4 w-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-          </svg>
-        ) : (
-          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
-          </svg>
-        )}
+        <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+        </svg>
       </button>
 
       {/* WhatsApp */}

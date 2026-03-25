@@ -57,26 +57,7 @@ export function ShareButtons({ workshopId, title, artistName, dateTime, city, im
     e.preventDefault();
     e.stopPropagation();
 
-    // Try native share with image (works on mobile)
-    if (navigator.share) {
-      try {
-        const file = await fetchImageFile();
-        const shareData: ShareData = {
-          title,
-          text: shareText.replace(/\*/g, ""),
-        };
-        if (file && navigator.canShare?.({ files: [file] })) {
-          shareData.files = [file];
-        }
-        await navigator.share(shareData);
-        return;
-      } catch (err) {
-        // User cancelled or share failed — fall through to WhatsApp URL
-        if ((err as Error).name === "AbortError") return;
-      }
-    }
-
-    // Fallback: open WhatsApp with text only
+    // Always open WhatsApp with text + link (image can't be sent via wa.me URL)
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
     window.open(whatsappUrl, "_blank");
   }
@@ -85,24 +66,12 @@ export function ShareButtons({ workshopId, title, artistName, dateTime, city, im
     e.preventDefault();
     e.stopPropagation();
 
-    // Download the poster image for the user to share on Instagram
-    if (imageUrl) {
-      const file = await fetchImageFile();
-      if (file && navigator.share && navigator.canShare?.({ files: [file] })) {
-        // Mobile: use native share to let user pick Instagram
-        try {
-          await navigator.share({
-            files: [file],
-            title,
-            text: `${title} by ${artistName} — Register: ${workshopUrl}`,
-          });
-          return;
-        } catch (err) {
-          if ((err as Error).name === "AbortError") return;
-        }
-      }
+    // Copy caption with link to clipboard, then download poster
+    const caption = `🎶 ${title}\n🎤 ${artistName}\n📅 ${formattedDate}\n📍 ${city}\n\nRegister now 👉 ${workshopUrl}\n\n#dance #workshop #bookyourdance`;
+    await navigator.clipboard.writeText(caption);
 
-      // Desktop: download the image + copy caption
+    if (imageUrl) {
+      // Download poster so user can upload to Instagram story
       const link = document.createElement("a");
       link.href = imageUrl;
       link.download = `${title.replace(/\s+/g, "-").toLowerCase()}-poster.jpg`;
@@ -112,9 +81,6 @@ export function ShareButtons({ workshopId, title, artistName, dateTime, city, im
       document.body.removeChild(link);
     }
 
-    // Copy caption to clipboard
-    const caption = `🎶 ${title}\n🎤 ${artistName}\n📅 ${formattedDate}\n📍 ${city}\n\nRegister now 👉 ${workshopUrl}\n\n#dance #workshop #bookyourdance`;
-    await navigator.clipboard.writeText(caption);
     setInstaCopied(true);
     setTimeout(() => setInstaCopied(false), 3000);
   }

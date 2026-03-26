@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "postinstall": "prisma generate",
-    "build": "prisma migrate resolve --rolled-back 20260327000000_add_email_verification; prisma migrate resolve --applied 20260327000000_add_email_verification; prisma migrate deploy && next build",
+    "build": "prisma migrate deploy && next build",
     "start": "next start",
     "lint": "eslint"
   },

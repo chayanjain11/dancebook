@@ -93,6 +93,16 @@ model BookingGuest {
   attended    Boolean @default(false)
 }
 
+model EmailVerification {
+  id        String   @id @default(cuid())
+  email     String
+  otp       String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([email])
+}
+
 model PasswordResetToken {
   id        String   @id @default(cuid())
   email     String

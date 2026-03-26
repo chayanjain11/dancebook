@@ -78,6 +78,12 @@ export function Navbar() {
                   Scan QR
                 </Link>
               )}
+              <Link href="/profile" className={navClass("/profile")}>
+                <svg className="h-4 w-4 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                Profile
+              </Link>
               <Button
                 variant="ghost"
                 size="sm"
@@ -141,6 +147,9 @@ export function Navbar() {
                       Scan QR
                     </Link>
                   )}
+                  <Link href="/profile" className={mobileNavClass("/profile")}>
+                    Profile
+                  </Link>
                   <button
                     className="rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent text-left"
                     onClick={() => signOut({ callbackUrl: "/" })}

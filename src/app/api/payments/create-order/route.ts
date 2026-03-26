@@ -37,7 +37,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: `Only ${seatsLeft} seats available` }, { status: 400 });
     }
 
-    const totalAmount = workshop.price * seatsBooked;
+    const PLATFORM_FEE_PER_SEAT = 5;
+    const workshopAmount = workshop.price * seatsBooked;
+    const platformFee = workshop.price > 0 ? PLATFORM_FEE_PER_SEAT * seatsBooked : 0;
+    const totalAmount = workshopAmount + platformFee;
 
     if (totalAmount === 0) {
       return NextResponse.json({ error: "No payment needed for free workshops" }, { status: 400 });

@@ -73,6 +73,11 @@ export function BookingForm({
   const [bookingId, setBookingId] = useState(existingBookingId || "");
   const [showBookMore, setShowBookMore] = useState(alreadyBooked);
 
+  const PLATFORM_FEE_PER_SEAT = 5;
+  const workshopAmount = pricePerSeat * seats;
+  const platformFee = pricePerSeat > 0 ? PLATFORM_FEE_PER_SEAT * seats : 0;
+  const totalAmount = workshopAmount + platformFee;
+
   if (isPast) {
     return (
       <div className="rounded-xl border border-border/50 bg-muted/30 px-6 py-8 text-center">
@@ -145,7 +150,7 @@ export function BookingForm({
             </motion.div>
             <h3 className="text-xl font-bold text-green-700">Booking Confirmed!</h3>
             <p className="mt-2 text-muted-foreground">
-              {seats} seat(s) booked. Total: {pricePerSeat * seats === 0 ? "Free" : `₹${pricePerSeat * seats}`}
+              {seats} seat(s) booked. Total: {totalAmount === 0 ? "Free" : `₹${totalAmount}`}
             </p>
             <Link href={bookingId ? `/customer/bookings/${bookingId}` : "/customer/bookings"}>
               <Button className="mt-6 rounded-full px-8" variant="outline">
@@ -158,7 +163,6 @@ export function BookingForm({
     );
   }
 
-  const totalAmount = pricePerSeat * seats;
   const stepIndex = step === "select" ? 0 : step === "details" ? 1 : 2;
 
   function goNext() {
@@ -374,11 +378,24 @@ export function BookingForm({
                     ))}
                   </select>
                 </div>
-                <div className="rounded-xl bg-gradient-to-r from-primary/5 to-accent/50 p-5">
+                <div className="rounded-xl bg-gradient-to-r from-primary/5 to-accent/50 p-5 space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">
                       ₹{pricePerSeat} x {seats} seat{seats > 1 ? "s" : ""}
                     </span>
+                    <span>₹{workshopAmount}</span>
+                  </div>
+                  {platformFee > 0 && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">
+                        Platform fee (₹{PLATFORM_FEE_PER_SEAT} x {seats})
+                      </span>
+                      <span>₹{platformFee}</span>
+                    </div>
+                  )}
+                  <Separator />
+                  <div className="flex justify-between text-sm">
+                    <span className="font-semibold">Total</span>
                     <span className="text-lg font-bold">
                       {totalAmount === 0 ? "Free" : `₹${totalAmount}`}
                     </span>
@@ -453,7 +470,18 @@ export function BookingForm({
                 <div className="rounded-xl bg-gradient-to-r from-primary/5 to-accent/50 p-5 space-y-3">
                   <h4 className="font-bold">Order Summary</h4>
                   <div className="flex justify-between text-sm">
-                    <span>{seats} seat(s)</span>
+                    <span>₹{pricePerSeat} x {seats} seat{seats > 1 ? "s" : ""}</span>
+                    <span>₹{workshopAmount}</span>
+                  </div>
+                  {platformFee > 0 && (
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                      <span>Platform fee (₹{PLATFORM_FEE_PER_SEAT} x {seats})</span>
+                      <span>₹{platformFee}</span>
+                    </div>
+                  )}
+                  <Separator />
+                  <div className="flex justify-between text-sm">
+                    <span className="font-semibold">Total</span>
                     <span className="font-bold text-lg">
                       {totalAmount === 0 ? "Free" : `₹${totalAmount}`}
                     </span>
@@ -484,31 +512,31 @@ export function BookingForm({
 
       <CardFooter className="flex gap-2 pt-2">
         {step !== "select" && (
-          <Button variant="outline" onClick={goBack} className="rounded-full">
+          <Button variant="outline" onClick={goBack} className="shrink-0 rounded-full">
             Back
           </Button>
         )}
         {step === "select" && (
           <Button className="w-full rounded-full h-11 shadow-md shadow-primary/20" onClick={goNext}>
-            Next: Attendee Details
+            Next
           </Button>
         )}
         {step === "details" && (
           <Button
-            className="w-full rounded-full h-11 shadow-md shadow-primary/20"
+            className="flex-1 min-w-0 rounded-full h-11 shadow-md shadow-primary/20"
             onClick={() => {
               const allFilled = guests.every(
                 (g) => g.name.length >= 2 && /^\d{10}$/.test(g.phone)
               );
               if (!allFilled) {
-                setError("Please fill in all attendee details (name min 2 chars, phone min 10 digits)");
+                setError("Please fill in all attendee details (name min 2 chars, phone 10 digits)");
                 return;
               }
               setError("");
               goNext();
             }}
           >
-            Next: Confirm & Pay
+            Confirm & Pay
           </Button>
         )}
         {step === "payment" && (

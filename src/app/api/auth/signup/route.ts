@@ -17,6 +17,18 @@ export async function POST(request: Request) {
 
     const { name, email, password, phone, role } = parsed.data;
 
+    // Organizer signup requires a valid invite code
+    if (role === "ORGANIZER") {
+      const invite = body.invite;
+      const validCode = process.env.HOST_INVITE_CODE || "BYD2026HOST";
+      if (!invite || invite !== validCode) {
+        return NextResponse.json(
+          { error: "Invalid invite code. Please apply to become a host first." },
+          { status: 403 }
+        );
+      }
+    }
+
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });

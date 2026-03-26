@@ -70,11 +70,11 @@ export default function HomePage() {
                 Browse Workshops
               </Button>
             </Link>
-            <Link href="/signup">
+            <a href="https://forms.gle/4XtZerq7pUVivVLZ6" target="_blank" rel="noopener noreferrer">
               <Button variant="outline" size="lg" className="rounded-full px-8 text-base h-12 hover:-translate-y-0.5 transition-all duration-300">
                 Host a Workshop
               </Button>
-            </Link>
+            </a>
           </MotionDiv>
         </MotionDiv>
       </motion.div>

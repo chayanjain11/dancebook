@@ -94,7 +94,6 @@ export default function EditWorkshopPage() {
       danceStyle,
       description: formData.get("description") as string,
       dateTime: formData.get("dateTime") as string,
-      mapUrl: (formData.get("mapUrl") as string) || "",
       price: Number(formData.get("price")),
       maxSeats: Number(formData.get("maxSeats")),
       durationMinutes: formData.get("durationMinutes") ? Number(formData.get("durationMinutes")) : null,
@@ -217,38 +216,16 @@ export default function EditWorkshopPage() {
                 <textarea id="description" name="description" rows={4} defaultValue={workshop.description} className="flex w-full rounded-lg border border-input bg-background px-3 py-2 text-sm transition-colors focus:ring-2 focus:ring-primary/20 focus:border-primary" required minLength={10} />
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="dateTime">Date & Time</Label>
-                  <Input id="dateTime" name="dateTime" type="datetime-local" defaultValue={(() => {
-                    const d = new Date(workshop.dateTime);
-                    const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
-                    return local.toISOString().slice(0, 16);
-                  })()} required className="h-11 rounded-lg" />
-                </div>
-                <div className="space-y-2">
-                  <Label>City</Label>
-                  <Input value={workshop.city} disabled className="h-11 rounded-lg bg-muted/50 text-muted-foreground" />
-                </div>
-              </div>
-
               <div className="space-y-2">
-                <Label>Studio Name</Label>
-                <Input value={workshop.studioName} disabled className="h-11 rounded-lg bg-muted/50 text-muted-foreground" />
-              </div>
-              <div className="space-y-2">
-                <Label>Studio Address</Label>
-                <Input value={workshop.studioAddress} disabled className="h-11 rounded-lg bg-muted/50 text-muted-foreground" />
-                <p className="text-xs text-muted-foreground">City, studio name and address cannot be changed after creation</p>
+                <Label htmlFor="dateTime">Date & Time</Label>
+                <Input id="dateTime" name="dateTime" type="datetime-local" defaultValue={(() => {
+                  const d = new Date(workshop.dateTime);
+                  const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+                  return local.toISOString().slice(0, 16);
+                })()} required className="h-11 rounded-lg" />
                 {hasBookings && (
                   <p className="text-xs text-amber-600">Changing date or time will notify all booked attendees via email</p>
                 )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="mapUrl">Google Maps Link (optional)</Label>
-                <Input id="mapUrl" name="mapUrl" type="url" placeholder="https://maps.google.com/..." defaultValue={workshop.mapUrl ?? ""} className="h-11 rounded-lg" />
-                <p className="text-xs text-muted-foreground">Paste the Google Maps link for your studio</p>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">

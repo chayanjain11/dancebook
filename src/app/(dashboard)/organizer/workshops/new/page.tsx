@@ -29,10 +29,6 @@ interface WorkshopData {
   danceStyle: string;
   description: string;
   dateTime: string;
-  city: string;
-  studioName: string;
-  studioAddress: string;
-  mapUrl?: string;
   price: number;
   maxSeats: number;
   durationMinutes?: number;
@@ -81,10 +77,6 @@ export default function NewWorkshopPage() {
       artistName: fd.get("artistName") as string,
       description: fd.get("description") as string,
       dateTime: fd.get("dateTime") as string,
-      city: fd.get("city") as string,
-      studioName: fd.get("studioName") as string,
-      studioAddress: fd.get("studioAddress") as string,
-      mapUrl: (fd.get("mapUrl") as string) || undefined,
       price: Number(fd.get("price")),
       maxSeats: Number(fd.get("maxSeats")),
       durationMinutes: fd.get("durationMinutes") ? Number(fd.get("durationMinutes")) : undefined,
@@ -149,7 +141,6 @@ export default function NewWorkshopPage() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   {[
                     { label: "Date & Time", value: new Date(formData.dateTime).toLocaleString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" }) },
-                    { label: "Location", value: `${formData.studioName}, ${formData.studioAddress}` },
                     { label: "Price", value: formData.price === 0 ? "Free" : `₹${formData.price} / seat` },
                     { label: "Max Seats", value: formData.maxSeats },
                     ...(formData.durationMinutes ? [{ label: "Duration", value: `${Math.floor(formData.durationMinutes / 60) > 0 ? Math.floor(formData.durationMinutes / 60) + "h " : ""}${formData.durationMinutes % 60 > 0 ? (formData.durationMinutes % 60) + "m" : ""}`.trim() }] : []),
@@ -248,23 +239,6 @@ export default function NewWorkshopPage() {
                       <Label htmlFor="dateTime">Date & Time</Label>
                       <Input id="dateTime" name="dateTime" type="datetime-local" defaultValue={formData?.dateTime} required className="h-11 rounded-lg" />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="city">City</Label>
-                      <Input id="city" name="city" placeholder="e.g., Mumbai" defaultValue={formData?.city} required className="h-11 rounded-lg" />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="studioName">Studio Name</Label>
-                    <Input id="studioName" name="studioName" placeholder="e.g., Dance Studio XYZ" defaultValue={formData?.studioName} required className="h-11 rounded-lg" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="studioAddress">Studio Address</Label>
-                    <Input id="studioAddress" name="studioAddress" placeholder="e.g., Andheri West, Mumbai" defaultValue={formData?.studioAddress} required className="h-11 rounded-lg" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="mapUrl">Google Maps Link (optional)</Label>
-                    <Input id="mapUrl" name="mapUrl" type="url" placeholder="https://maps.google.com/..." defaultValue={formData?.mapUrl} className="h-11 rounded-lg" />
-                    <p className="text-xs text-muted-foreground">Paste the Google Maps link for your studio so attendees can find it easily</p>
                   </div>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">

@@ -69,11 +69,15 @@ function HostSignUpContent() {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
     const phone = formData.get("phone") as string;
+    const studioName = formData.get("studioName") as string;
+    const studioAddress = formData.get("studioAddress") as string;
+    const city = formData.get("city") as string;
+    const mapUrl = (formData.get("mapUrl") as string) || undefined;
 
     const res = await fetch("/api/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password, phone, role: "ORGANIZER", invite }),
+      body: JSON.stringify({ name, email, password, phone, studioName, studioAddress, city, mapUrl, role: "ORGANIZER", invite }),
     });
 
     const data = await res.json();
@@ -145,6 +149,22 @@ function HostSignUpContent() {
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone Number</Label>
                   <Input id="phone" name="phone" type="tel" inputMode="numeric" pattern="\d{10}" maxLength={10} placeholder="9876543210" required onInput={(e) => { e.currentTarget.value = e.currentTarget.value.replace(/\D/g, "").slice(0, 10); }} className="h-11 rounded-lg" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="studioName">Studio Name</Label>
+                  <Input id="studioName" name="studioName" placeholder="e.g., Dance Studio XYZ" required minLength={2} className="h-11 rounded-lg" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="studioAddress">Studio Address</Label>
+                  <Input id="studioAddress" name="studioAddress" placeholder="e.g., Andheri West, Mumbai" required minLength={5} className="h-11 rounded-lg" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="city">City</Label>
+                  <Input id="city" name="city" placeholder="e.g., Mumbai" required minLength={2} className="h-11 rounded-lg" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="mapUrl">Google Maps Link (optional)</Label>
+                  <Input id="mapUrl" name="mapUrl" type="url" placeholder="https://maps.google.com/..." className="h-11 rounded-lg" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password">Password</Label>

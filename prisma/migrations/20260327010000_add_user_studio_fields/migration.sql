@@ -1,0 +1,3 @@
+ALTER TABLE "User" ADD COLUMN "studioName" TEXT;
+ALTER TABLE "User" ADD COLUMN "studioAddress" TEXT;
+ALTER TABLE "User" ADD COLUMN "mapUrl" TEXT;

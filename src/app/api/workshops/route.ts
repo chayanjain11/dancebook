@@ -27,13 +27,21 @@ export async function POST(request: Request) {
       );
     }
 
-    const { imageUrl, mapUrl, ...rest } = parsed.data;
+    const organizer = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { studioName: true, studioAddress: true, city: true, mapUrl: true },
+    });
+
+    const { imageUrl, ...rest } = parsed.data;
 
     const workshop = await prisma.workshop.create({
       data: {
         ...rest,
         imageUrl: imageUrl || null,
-        mapUrl: mapUrl || null,
+        studioName: organizer?.studioName || "",
+        studioAddress: organizer?.studioAddress || "",
+        city: organizer?.city || "",
+        mapUrl: organizer?.mapUrl || null,
         dateTime: new Date(rest.dateTime),
         organizerId: session.user.id,
       },

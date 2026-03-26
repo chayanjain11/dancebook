@@ -24,8 +24,11 @@ model User {
   name         String
   phone        String?
   role         Role      @default(CUSTOMER)
-  city         String?
-  googleId     String?   @unique
+  city          String?
+  studioName    String?
+  studioAddress String?
+  mapUrl        String?
+  googleId      String?   @unique
   image        String?
   workshops    Workshop[]
   bookings     Booking[]

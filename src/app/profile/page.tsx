@@ -23,6 +23,9 @@ interface Profile {
   phone: string | null;
   role: string;
   city: string | null;
+  studioName: string | null;
+  studioAddress: string | null;
+  mapUrl: string | null;
   image: string | null;
   createdAt: string;
   _count: {
@@ -32,13 +35,16 @@ interface Profile {
 }
 
 export default function ProfilePage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [city, setCity] = useState("");
+  const [studioName, setStudioName] = useState("");
+  const [studioAddress, setStudioAddress] = useState("");
+  const [mapUrl, setMapUrl] = useState("");
   const [loading, setLoading] = useOverlayLoading();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -52,15 +58,18 @@ export default function ProfilePage() {
         setName(data.name);
         setPhone(data.phone || "");
         setCity(data.city || "");
+        setStudioName(data.studioName || "");
+        setStudioAddress(data.studioAddress || "");
+        setMapUrl(data.mapUrl || "");
       });
   }, [session]);
 
-  if (!session?.user) {
+  if (status === "unauthenticated") {
     router.push("/login");
     return null;
   }
 
-  if (!profile) {
+  if (status === "loading" || !profile) {
     return (
       <div className="flex justify-center py-20">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
@@ -81,7 +90,7 @@ export default function ProfilePage() {
     const res = await fetch("/api/profile", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, phone, city }),
+      body: JSON.stringify({ name, phone, city, studioName, studioAddress, mapUrl }),
     });
 
     const data = await res.json();
@@ -208,6 +217,41 @@ export default function ProfilePage() {
                     className="h-11 rounded-lg"
                   />
                 </div>
+                {isOrganizer && (
+                  <>
+                    <div className="space-y-2">
+                      <Label htmlFor="studioName">Studio Name</Label>
+                      <Input
+                        id="studioName"
+                        value={studioName}
+                        onChange={(e) => setStudioName(e.target.value)}
+                        placeholder="e.g., Dance Studio XYZ"
+                        className="h-11 rounded-lg"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="studioAddress">Studio Address</Label>
+                      <Input
+                        id="studioAddress"
+                        value={studioAddress}
+                        onChange={(e) => setStudioAddress(e.target.value)}
+                        placeholder="e.g., Andheri West, Mumbai"
+                        className="h-11 rounded-lg"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="mapUrl">Google Maps Link</Label>
+                      <Input
+                        id="mapUrl"
+                        type="url"
+                        value={mapUrl}
+                        onChange={(e) => setMapUrl(e.target.value)}
+                        placeholder="https://maps.google.com/..."
+                        className="h-11 rounded-lg"
+                      />
+                    </div>
+                  </>
+                )}
                 <div className="flex gap-2 pt-2">
                   <Button
                     className="flex-1 rounded-full shadow-md shadow-primary/20"
@@ -224,6 +268,9 @@ export default function ProfilePage() {
                       setName(profile.name);
                       setPhone(profile.phone || "");
                       setCity(profile.city || "");
+                      setStudioName(profile.studioName || "");
+                      setStudioAddress(profile.studioAddress || "");
+                      setMapUrl(profile.mapUrl || "");
                       setError("");
                     }}
                   >
@@ -238,6 +285,11 @@ export default function ProfilePage() {
                   { label: "Email", value: profile.email },
                   { label: "Phone", value: profile.phone || "Not set" },
                   { label: "City", value: profile.city || "Not set" },
+                  ...(isOrganizer ? [
+                    { label: "Studio Name", value: profile.studioName || "Not set" },
+                    { label: "Studio Address", value: profile.studioAddress || "Not set" },
+                    { label: "Google Maps", value: profile.mapUrl || "Not set" },
+                  ] : []),
                   { label: "Account Type", value: isOrganizer ? "Host" : "Customer" },
                 ].map((item) => (
                   <div key={item.label} className="flex justify-between items-center py-1.5 border-b border-border/30 last:border-0">

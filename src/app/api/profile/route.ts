@@ -17,6 +17,9 @@ export async function GET() {
       phone: true,
       role: true,
       city: true,
+      studioName: true,
+      studioAddress: true,
+      mapUrl: true,
       image: true,
       createdAt: true,
       _count: {
@@ -42,7 +45,7 @@ export async function PUT(request: Request) {
   }
 
   const body = await request.json();
-  const { name, phone, city } = body;
+  const { name, phone, city, studioName, studioAddress, mapUrl } = body;
 
   if (!name || name.length < 2) {
     return NextResponse.json({ error: "Name must be at least 2 characters" }, { status: 400 });
@@ -58,6 +61,9 @@ export async function PUT(request: Request) {
       name,
       phone: phone || null,
       city: city || null,
+      studioName: studioName || null,
+      studioAddress: studioAddress || null,
+      mapUrl: mapUrl || null,
     },
     select: {
       id: true,
@@ -66,6 +72,9 @@ export async function PUT(request: Request) {
       phone: true,
       role: true,
       city: true,
+      studioName: true,
+      studioAddress: true,
+      mapUrl: true,
       image: true,
     },
   });

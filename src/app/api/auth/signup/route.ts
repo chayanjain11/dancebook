@@ -42,8 +42,17 @@ export async function POST(request: Request) {
 
     const passwordHash = await bcrypt.hash(password, 12);
 
+    const createData: Record<string, unknown> = { name, email, passwordHash, phone, role };
+
+    if (role === "ORGANIZER") {
+      if (body.studioName) createData.studioName = body.studioName;
+      if (body.studioAddress) createData.studioAddress = body.studioAddress;
+      if (body.city) createData.city = body.city;
+      if (body.mapUrl) createData.mapUrl = body.mapUrl;
+    }
+
     const user = await prisma.user.create({
-      data: { name, email, passwordHash, phone, role },
+      data: createData as { name: string; email: string; passwordHash: string; phone: string; role: "CUSTOMER" | "ORGANIZER"; studioName?: string; studioAddress?: string; city?: string; mapUrl?: string },
     });
 
     return NextResponse.json(

@@ -12,18 +12,20 @@ export function RouteLoader() {
   // Detect navigation start by intercepting clicks on links
   useEffect(() => {
     function handleClick(e: MouseEvent) {
-      // Skip if event was already prevented (e.g. share buttons)
-      if (e.defaultPrevented) return;
-
       const target = e.target as HTMLElement;
-      // Skip if click originated from a button inside a link
+
+      // Skip if click originated from a button (share buttons, sign out, etc.)
       if (target.closest("button")) return;
+      // Skip if target has data-no-loader attribute
+      if (target.closest("[data-no-loader]")) return;
 
       const anchor = target.closest("a");
       if (!anchor) return;
 
       const href = anchor.getAttribute("href");
       if (!href || href.startsWith("http") || href.startsWith("#") || href.startsWith("mailto:")) return;
+      // Skip external targets
+      if (anchor.getAttribute("target") === "_blank") return;
 
       // Internal navigation — show loader
       const current = window.location.pathname + window.location.search;
@@ -32,8 +34,8 @@ export function RouteLoader() {
       }
     }
 
-    document.addEventListener("click", handleClick);
-    return () => document.removeEventListener("click", handleClick);
+    document.addEventListener("click", handleClick, true);
+    return () => document.removeEventListener("click", handleClick, true);
   }, []);
 
   // Detect navigation end when pathname/search changes

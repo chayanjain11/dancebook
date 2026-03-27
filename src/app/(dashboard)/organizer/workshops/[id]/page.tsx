@@ -1,5 +1,6 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Badge } from "@/components/ui/badge";
@@ -70,6 +71,13 @@ export default async function OrganizerWorkshopDetailPage({
           Back to Dashboard
         </Link>
       </div>
+
+      {workshop.imageUrl && (
+        <div className="relative mb-5 h-48 sm:h-64 w-full overflow-hidden rounded-2xl shadow-lg">
+          <Image src={workshop.imageUrl} alt={workshop.title} fill className="object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+        </div>
+      )}
 
       <div className="mb-8 rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-800 px-4 py-5 sm:px-7 sm:py-7 text-white shadow-xl">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">

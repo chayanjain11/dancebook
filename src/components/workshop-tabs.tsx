@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { ShareButtons } from "@/components/share-buttons";
 
@@ -62,7 +63,18 @@ export function WorkshopTabs({ upcoming, completed }: { upcoming: WorkshopItem[]
 
             return (
               <Link key={workshop.id} href={`/organizer/workshops/${workshop.id}`}>
-                <div className="group rounded-2xl border border-border/50 bg-card px-4 py-4 sm:px-6 sm:py-5 shadow-sm transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 cursor-pointer mb-1">
+                <div className="group flex overflow-hidden rounded-2xl border border-border/50 bg-card shadow-sm transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 cursor-pointer mb-1">
+                  {workshop.imageUrl && (
+                    <div className="relative hidden w-32 shrink-0 sm:block overflow-hidden">
+                      <Image
+                        src={workshop.imageUrl}
+                        alt={workshop.title}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    </div>
+                  )}
+                  <div className="flex-1 px-4 py-4 sm:px-6 sm:py-5">
                   <div className="flex items-center justify-between">
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
@@ -112,6 +124,7 @@ export function WorkshopTabs({ upcoming, completed }: { upcoming: WorkshopItem[]
                       city={workshop.city}
                       imageUrl={workshop.imageUrl}
                     />
+                  </div>
                   </div>
                 </div>
               </Link>

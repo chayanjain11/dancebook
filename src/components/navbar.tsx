@@ -55,7 +55,7 @@ export function Navbar() {
       className="sticky top-0 z-50 glass border-b"
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-        <Link href="/" className="text-xl font-extrabold tracking-tight flex items-center gap-1.5">
+        <Link href={isOrganizer ? "/organizer/workshops" : "/"} className="text-xl font-extrabold tracking-tight flex items-center gap-1.5">
           <span className="inline-flex items-center justify-center h-8 w-8 rounded-lg bg-primary text-primary-foreground text-sm font-black shadow-md shadow-primary/30">B</span>
           <span><span className="gradient-text">Book</span>Your<span className="gradient-text">Dance</span></span>
         </Link>

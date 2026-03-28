@@ -32,7 +32,7 @@ export default function TermsPage() {
             <li>You must provide accurate and complete information during registration.</li>
             <li>You are responsible for maintaining the confidentiality of your account credentials.</li>
             <li>You must be at least 18 years old to create an account, or have parental/guardian consent.</li>
-            <li>Each user may register as either a &quot;Customer&quot; (attendee) or an &quot;Organizer&quot; (workshop host).</li>
+            <li>Customers (attendees) can sign up directly. Workshop hosts (Organizers) are onboarded by invitation only after an application review process.</li>
             <li>We reserve the right to suspend or terminate accounts that violate these terms.</li>
           </ul>
         </section>
@@ -41,8 +41,10 @@ export default function TermsPage() {
           <h2 className="text-lg font-bold text-foreground">4. Booking & Payments</h2>
           <ul className="list-disc pl-6 space-y-1">
             <li>All workshop prices are listed in Indian Rupees (INR) and are set by the respective organizers.</li>
+            <li>A platform fee of &#x20B9;5 per seat is charged on all paid workshop bookings. This fee is clearly displayed at checkout before payment.</li>
             <li>Payments are processed securely through Razorpay. By making a payment, you also agree to Razorpay&apos;s terms of service.</li>
             <li>A booking is confirmed only after successful payment. You will receive a digital ticket with a QR code for each seat booked.</li>
+            <li>Individual booking cancellations by customers are not supported at this time. If you need to cancel, please contact us at bookyourdance22@gmail.com.</li>
             <li>BookYourDance is not responsible for the quality, content, or conduct of any workshop. Organizers are solely responsible for delivering the workshop as described.</li>
           </ul>
         </section>

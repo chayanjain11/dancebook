@@ -67,32 +67,17 @@ export default function ContactPage() {
         ))}
       </div>
 
-      <div className="rounded-2xl border border-border/50 bg-card p-8 shadow-sm">
+      <div className="rounded-2xl border border-border/50 bg-card p-8 shadow-sm text-center">
         <h2 className="text-xl font-bold mb-1">Send us a message</h2>
-        <p className="text-sm text-muted-foreground mb-6">Fill out the form and we&apos;ll get back to you within 24 hours.</p>
-        <form className="space-y-4">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-1.5">
-              <label htmlFor="name" className="text-sm font-medium">Name</label>
-              <input id="name" name="name" placeholder="Your name" required className="flex h-11 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm transition-colors focus:ring-2 focus:ring-primary/20 focus:border-primary" />
-            </div>
-            <div className="space-y-1.5">
-              <label htmlFor="email" className="text-sm font-medium">Email</label>
-              <input id="email" name="email" type="email" placeholder="you@example.com" required className="flex h-11 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm transition-colors focus:ring-2 focus:ring-primary/20 focus:border-primary" />
-            </div>
-          </div>
-          <div className="space-y-1.5">
-            <label htmlFor="subject" className="text-sm font-medium">Subject</label>
-            <input id="subject" name="subject" placeholder="How can we help?" required className="flex h-11 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm transition-colors focus:ring-2 focus:ring-primary/20 focus:border-primary" />
-          </div>
-          <div className="space-y-1.5">
-            <label htmlFor="message" className="text-sm font-medium">Message</label>
-            <textarea id="message" name="message" rows={4} placeholder="Tell us more..." required className="flex w-full rounded-lg border border-input bg-background px-3 py-2 text-sm transition-colors focus:ring-2 focus:ring-primary/20 focus:border-primary" />
-          </div>
-          <button type="submit" className="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground px-8 h-11 text-sm font-medium shadow-md shadow-primary/20 hover:opacity-90 transition-opacity">
-            Send Message
-          </button>
-        </form>
+        <p className="text-sm text-muted-foreground mb-6">
+          Drop us an email and we&apos;ll get back to you within 24 hours.
+        </p>
+        <a
+          href="mailto:bookyourdance22@gmail.com?subject=BookYourDance%20-%20Enquiry"
+          className="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground px-8 h-11 text-sm font-medium shadow-md shadow-primary/20 hover:opacity-90 transition-opacity"
+        >
+          Email Us
+        </a>
       </div>
     </div>
   );

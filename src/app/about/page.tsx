@@ -28,7 +28,7 @@ export default function AboutPage() {
           <div className="grid gap-4 sm:grid-cols-2 not-prose">
             {[
               { title: "For Dancers", desc: "Browse, discover, and book dance workshops across 10+ styles. Get instant QR tickets and walk in hassle-free." },
-              { title: "For Organizers", desc: "List your workshops, manage bookings, track attendance with QR scanning, and grow your dance community." },
+              { title: "For Organizers", desc: "Apply to become a verified host. Manage bookings, track attendance with QR scanning, and grow your dance community." },
               { title: "Easy Booking", desc: "Book multiple seats in just 3 steps. Secure payments via Razorpay. Instant digital tickets for every attendee." },
               { title: "QR Check-in", desc: "Organizers can scan attendee QR codes at the venue for seamless, paperless check-in." },
             ].map((item) => (
@@ -43,7 +43,7 @@ export default function AboutPage() {
         <section>
           <h2 className="text-lg font-bold text-foreground">Dance Styles We Cover</h2>
           <div className="flex flex-wrap gap-2 not-prose">
-            {["Salsa", "Hip-Hop", "Bollywood", "Contemporary", "Ballet", "Bachata", "Kathak", "Bharatanatyam", "Jazz", "Freestyle"].map((style) => (
+            {["Salsa", "Hip-Hop", "Bollywood", "Contemporary", "Ballet", "Bachata", "Kathak", "Bharatanatyam", "Jazz", "Freestyle", "& more"].map((style) => (
               <span key={style} className="inline-block rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground">
                 {style}
               </span>
@@ -55,7 +55,7 @@ export default function AboutPage() {
           <h2 className="text-lg font-bold text-foreground">Why BookYourDance?</h2>
           <ul className="list-disc pl-6 space-y-2">
             <li><strong>Curated Workshops:</strong> We work with passionate organizers and instructors to bring quality workshops to your city.</li>
-            <li><strong>Transparent Pricing:</strong> No hidden fees. What you see is what you pay. Free workshops are always free.</li>
+            <li><strong>Transparent Pricing:</strong> Workshop prices are set by organizers. A small platform fee of &#x20B9;5 per seat applies on paid bookings. Free workshops are always free.</li>
             <li><strong>Secure Payments:</strong> All transactions are processed through Razorpay with PCI-DSS compliant security.</li>
             <li><strong>Instant Confirmation:</strong> Book and receive your QR tickets immediately. No waiting, no paperwork.</li>
             <li><strong>Community Driven:</strong> We&apos;re building a community of dancers, instructors, and organizers who share the love of dance.</li>

@@ -24,6 +24,7 @@ export default function PrivacyPolicyPage() {
           <p>We collect the following types of information:</p>
           <ul className="list-disc pl-6 space-y-1">
             <li><strong>Personal Information:</strong> Name, email address, phone number, and city when you create an account or book a workshop.</li>
+            <li><strong>Google Account Data:</strong> If you sign in with Google, we receive your name, email address, and profile picture from your Google account.</li>
             <li><strong>Booking Information:</strong> Workshop preferences, booking history, guest names and phone numbers provided during booking.</li>
             <li><strong>Payment Information:</strong> Payment details are processed securely through our payment partner Razorpay. We do not store your credit/debit card numbers, CVV, or banking credentials on our servers. Razorpay handles all payment data in compliance with PCI-DSS standards.</li>
             <li><strong>Usage Data:</strong> Browser type, IP address, pages visited, and time spent on the platform for analytics and improvement purposes.</li>

@@ -21,27 +21,9 @@ export default function RefundPolicyPage() {
 
         <section>
           <h2 className="text-lg font-bold text-foreground">2. Cancellation by Customer</h2>
-          <div className="rounded-xl border border-border bg-muted/30 p-4 space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="font-medium">More than 48 hours before workshop</span>
-              <span className="font-bold text-green-600">Full refund (100%)</span>
-            </div>
-            <div className="border-t border-border" />
-            <div className="flex justify-between items-center">
-              <span className="font-medium">24 to 48 hours before workshop</span>
-              <span className="font-bold text-yellow-600">50% refund</span>
-            </div>
-            <div className="border-t border-border" />
-            <div className="flex justify-between items-center">
-              <span className="font-medium">Less than 24 hours before workshop</span>
-              <span className="font-bold text-red-600">No refund</span>
-            </div>
-            <div className="border-t border-border" />
-            <div className="flex justify-between items-center">
-              <span className="font-medium">After workshop has started / No-show</span>
-              <span className="font-bold text-red-600">No refund</span>
-            </div>
-          </div>
+          <p>
+            Individual booking cancellations by customers are currently not supported through the platform. If you need to cancel a booking, please contact us at <a href="mailto:bookyourdance22@gmail.com" className="text-primary hover:underline">bookyourdance22@gmail.com</a> with your booking details. We will review your request and process it on a case-by-case basis.
+          </p>
         </section>
 
         <section>
@@ -79,7 +61,8 @@ export default function RefundPolicyPage() {
           </p>
           <ul className="list-disc pl-6 space-y-1">
             <li>Existing bookings will be automatically transferred to the new date.</li>
-            <li>Attendees who cannot attend the rescheduled date are eligible for a full refund, regardless of the cancellation timeline above.</li>
+            <li>All booked attendees will be notified via email about the schedule change.</li>
+            <li>Attendees who cannot attend the rescheduled date may contact us at <a href="mailto:bookyourdance22@gmail.com" className="text-primary hover:underline">bookyourdance22@gmail.com</a> to request a refund.</li>
           </ul>
         </section>
 
@@ -92,15 +75,8 @@ export default function RefundPolicyPage() {
 
         <section>
           <h2 className="text-lg font-bold text-foreground">7. How to Request a Refund</h2>
-          <p>To request a cancellation and refund:</p>
-          <ol className="list-decimal pl-6 space-y-1">
-            <li>Log in to your BookYourDance account</li>
-            <li>Go to your Bookings dashboard</li>
-            <li>Select the booking you wish to cancel</li>
-            <li>Click &quot;Cancel Booking&quot; and confirm</li>
-          </ol>
-          <p className="mt-2">
-            Alternatively, you can email us at <a href="mailto:bookyourdance22@gmail.com" className="text-primary hover:underline">bookyourdance22@gmail.com</a> with your booking details and we will process the cancellation for you.
+          <p>
+            To request a refund, email us at <a href="mailto:bookyourdance22@gmail.com" className="text-primary hover:underline">bookyourdance22@gmail.com</a> with your booking details (name, email, workshop name, and booking date). We will review and process your request within 3 business days.
           </p>
         </section>
 

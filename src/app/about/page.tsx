@@ -55,7 +55,7 @@ export default function AboutPage() {
           <h2 className="text-lg font-bold text-foreground">Why BookYourDance?</h2>
           <ul className="list-disc pl-6 space-y-2">
             <li><strong>Curated Workshops:</strong> We work with passionate organizers and instructors to bring quality workshops to your city.</li>
-            <li><strong>Transparent Pricing:</strong> Workshop prices are set by organizers. A small platform fee of &#x20B9;5 per seat applies on paid bookings. Free workshops are always free.</li>
+            <li><strong>Transparent Pricing:</strong> Workshop prices are set by organizers. A small platform fee of &#x20B9;10 per seat applies on paid bookings. Free workshops are always free.</li>
             <li><strong>Secure Payments:</strong> All transactions are processed through Razorpay with PCI-DSS compliant security.</li>
             <li><strong>Instant Confirmation:</strong> Book and receive your QR tickets immediately. No waiting, no paperwork.</li>
             <li><strong>Community Driven:</strong> We&apos;re building a community of dancers, instructors, and organizers who share the love of dance.</li>

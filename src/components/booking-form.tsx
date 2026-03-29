@@ -73,7 +73,7 @@ export function BookingForm({
   const [bookingId, setBookingId] = useState(existingBookingId || "");
   const [showBookMore, setShowBookMore] = useState(alreadyBooked);
 
-  const PLATFORM_FEE_PER_SEAT = 5;
+  const PLATFORM_FEE_PER_SEAT = 10;
   const workshopAmount = pricePerSeat * seats;
   const platformFee = pricePerSeat > 0 ? PLATFORM_FEE_PER_SEAT * seats : 0;
   const totalAmount = workshopAmount + platformFee;

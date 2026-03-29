@@ -41,7 +41,7 @@ export default function TermsPage() {
           <h2 className="text-lg font-bold text-foreground">4. Booking & Payments</h2>
           <ul className="list-disc pl-6 space-y-1">
             <li>All workshop prices are listed in Indian Rupees (INR) and are set by the respective organizers.</li>
-            <li>A platform fee of &#x20B9;5 per seat is charged on all paid workshop bookings. This fee is clearly displayed at checkout before payment.</li>
+            <li>A platform fee of &#x20B9;10 per seat is charged on all paid workshop bookings. This fee is clearly displayed at checkout before payment.</li>
             <li>Payments are processed securely through Razorpay. By making a payment, you also agree to Razorpay&apos;s terms of service.</li>
             <li>A booking is confirmed only after successful payment. You will receive a digital ticket with a QR code for each seat booked.</li>
             <li>Individual booking cancellations by customers are not supported at this time. If you need to cancel, please contact us at bookyourdance22@gmail.com.</li>

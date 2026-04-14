@@ -223,9 +223,6 @@ export default function EditWorkshopPage() {
                   const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
                   return local.toISOString().slice(0, 16);
                 })()} required className="h-11 rounded-lg" />
-                {hasBookings && (
-                  <p className="text-xs text-amber-600">Changing date or time will notify all booked attendees via email</p>
-                )}
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">

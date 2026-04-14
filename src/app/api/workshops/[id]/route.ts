@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { workshopUpdateSchema } from "@/lib/validations";
-import { sendBulkEmail, notificationEmailHtml } from "@/lib/email";
+
 
 export async function GET(
   _request: Request,
@@ -91,17 +91,6 @@ export async function PUT(
       );
     }
 
-    // Detect date/time changes for notification
-    const changes: string[] = [];
-    if (parsed.data.dateTime) {
-      const newDate = new Date(parsed.data.dateTime);
-      const oldDate = new Date(workshop.dateTime);
-      // Only trigger if difference is more than 60 seconds (avoids timezone/serialization noise)
-      if (Math.abs(newDate.getTime() - oldDate.getTime()) > 60000) {
-        changes.push(`Date & Time changed to ${newDate.toLocaleString("en-IN", { dateStyle: "full", timeStyle: "short" })}`);
-      }
-    }
-
     const { imageUrl, dateTime, ...rest } = parsed.data;
 
     const updated = await prisma.workshop.update({
@@ -112,23 +101,6 @@ export async function PUT(
         imageUrl: imageUrl || workshop.imageUrl,
       },
     });
-
-    // Send email notification if date/time changed and there are bookings
-    if (changes.length > 0 && bookedSeats > 0) {
-      const recipients = workshop.bookings.map((b) => ({
-        email: b.user.email,
-        name: b.user.name,
-      }));
-      const subject = `Workshop Updated: ${workshop.title}`;
-      const message = changes.join("\n");
-      const html = notificationEmailHtml(workshop.title, "DELAY", subject, message);
-
-      await prisma.workshopNotification.create({
-        data: { workshopId: id, type: "DELAY", subject, message },
-      });
-
-      sendBulkEmail(recipients, subject, html).catch(console.error);
-    }
 
     return NextResponse.json(updated);
   } catch {

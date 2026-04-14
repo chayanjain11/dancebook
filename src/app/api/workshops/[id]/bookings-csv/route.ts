@@ -19,7 +19,7 @@ export async function GET(
         where: { status: "CONFIRMED" },
         include: {
           user: { select: { name: true, phone: true, email: true } },
-          guests: { select: { name: true, phone: true } },
+          guests: { select: { name: true, phone: true, whatsapp: true, attended: true } },
         },
         orderBy: { bookedAt: "asc" },
       },
@@ -31,7 +31,7 @@ export async function GET(
   }
 
   const rows: string[] = [
-    "S.No,Attendee Name,Phone,Booked By,Booking Date,Seats",
+    "S.No,Attendee Name,Phone,WhatsApp,Booked By,Booking Date,Seats,Attended",
   ];
 
   let serial = 1;
@@ -43,13 +43,13 @@ export async function GET(
     if (booking.guests.length > 0) {
       for (const guest of booking.guests) {
         rows.push(
-          `${serial},"${guest.name}","${guest.phone}","${bookedBy}","${bookingDate}",${booking.seatsBooked}`
+          `${serial},"${guest.name}","${guest.phone}","${guest.whatsapp || ""}","${bookedBy}","${bookingDate}",${booking.seatsBooked},${guest.attended ? "Yes" : "No"}`
         );
         serial++;
       }
     } else {
       rows.push(
-        `${serial},"${bookedBy}","${booking.user.phone || "N/A"}","${bookedBy}","${bookingDate}",${booking.seatsBooked}`
+        `${serial},"${bookedBy}","${booking.user.phone || "N/A"}","","${bookedBy}","${bookingDate}",${booking.seatsBooked},No`
       );
       serial++;
     }

@@ -388,7 +388,7 @@ export function BookingForm({
                   {platformFee > 0 && (
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">
-                        Platform fee ({PLATFORM_FEE_PERCENT}%)
+                        Platform fee
                       </span>
                       <span>₹{platformFee}</span>
                     </div>
@@ -475,7 +475,7 @@ export function BookingForm({
                   </div>
                   {platformFee > 0 && (
                     <div className="flex justify-between text-sm text-muted-foreground">
-                      <span>Platform fee ({PLATFORM_FEE_PERCENT}%)</span>
+                      <span>Platform fee</span>
                       <span>₹{platformFee}</span>
                     </div>
                   )}

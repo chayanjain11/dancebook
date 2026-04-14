@@ -73,9 +73,9 @@ export function BookingForm({
   const [bookingId, setBookingId] = useState(existingBookingId || "");
   const [showBookMore, setShowBookMore] = useState(alreadyBooked);
 
-  const PLATFORM_FEE_PER_SEAT = 10;
+  const PLATFORM_FEE_PERCENT = 5;
   const workshopAmount = pricePerSeat * seats;
-  const platformFee = pricePerSeat > 0 ? PLATFORM_FEE_PER_SEAT * seats : 0;
+  const platformFee = pricePerSeat > 0 ? Math.round(workshopAmount * PLATFORM_FEE_PERCENT / 100) : 0;
   const totalAmount = workshopAmount + platformFee;
 
   if (isPast) {
@@ -388,7 +388,7 @@ export function BookingForm({
                   {platformFee > 0 && (
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">
-                        Platform fee (₹{PLATFORM_FEE_PER_SEAT} x {seats})
+                        Platform fee ({PLATFORM_FEE_PERCENT}%)
                       </span>
                       <span>₹{platformFee}</span>
                     </div>
@@ -475,7 +475,7 @@ export function BookingForm({
                   </div>
                   {platformFee > 0 && (
                     <div className="flex justify-between text-sm text-muted-foreground">
-                      <span>Platform fee (₹{PLATFORM_FEE_PER_SEAT} x {seats})</span>
+                      <span>Platform fee ({PLATFORM_FEE_PERCENT}%)</span>
                       <span>₹{platformFee}</span>
                     </div>
                   )}

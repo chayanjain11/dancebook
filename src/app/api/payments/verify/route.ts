@@ -52,9 +52,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: `Only ${seatsLeft} seats available` }, { status: 400 });
     }
 
-    const PLATFORM_FEE_PER_SEAT = 10;
+    const PLATFORM_FEE_PERCENT = 5;
     const workshopAmount = workshop.price * seatsBooked;
-    const platformFee = workshop.price > 0 ? PLATFORM_FEE_PER_SEAT * seatsBooked : 0;
+    const platformFee = workshop.price > 0 ? Math.round(workshopAmount * PLATFORM_FEE_PERCENT / 100) : 0;
     const totalAmount = workshopAmount + platformFee;
 
     const booking = await prisma.booking.create({

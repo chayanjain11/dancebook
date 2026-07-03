@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { sendBookingConfirmationEmail } from "@/lib/email";
 import crypto from "crypto";
 
 export async function POST(request: Request) {
@@ -73,8 +74,28 @@ export async function POST(request: Request) {
           })),
         },
       },
-      include: { guests: true },
+      include: {
+        guests: true,
+        user: { select: { email: true, name: true } },
+      },
     });
+
+    // Send confirmation email with workshop details + QR tickets.
+    // Never let an email failure break a paid booking.
+    if (booking.user.email) {
+      try {
+        await sendBookingConfirmationEmail({
+          to: booking.user.email,
+          customerName: booking.user.name,
+          workshop,
+          guests: booking.guests,
+          seatsBooked: booking.seatsBooked,
+          totalAmount: booking.totalAmount,
+        });
+      } catch (emailErr) {
+        console.error("Booking confirmation email failed:", emailErr);
+      }
+    }
 
     return NextResponse.json(booking, { status: 201 });
   } catch (err: unknown) {
